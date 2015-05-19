@@ -16,7 +16,7 @@
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
 #define DELAY 1000
-#define DELAY_MIN 1000
+#define DELAY_MIN 100
 #define DELAY_MAX 100000
 
 typedef struct mem_s {
