@@ -5,3 +5,4 @@ LDFLAGS=-lcurses -lm
 
 bin_PROGRAMS = memwatch
 getkey_SOURCES = memwatch.c
+man_MANS = memwatch.1
