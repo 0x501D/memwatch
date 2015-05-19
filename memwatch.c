@@ -10,11 +10,14 @@
 #include <curses.h>
 #include <string.h>
 #include <math.h>
+#include <libgen.h>
 #include <sys/time.h>
 
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
 #define DELAY 1000
+#define DELAY_MIN 1000
+#define DELAY_MAX 100000
 
 typedef struct mem_s {
      char *mem_total_s, *mem_free_s, *mem_used_s;
@@ -35,10 +38,36 @@ void print_info(const mem_t *);
 void clear_data(mem_t *);
 void print_bar(uint32_t, uint32_t, uint32_t);
 
-int main(void)
+int main(int argc, char **argv)
 {
      int c;
-     set_timer(DELAY);
+     int opt, d_flag, u_delay;
+     d_flag = 0;
+
+     while((opt = getopt(argc, argv, "hd:")) != -1)
+     {
+          switch(opt)
+          {
+               case 'd':
+                    u_delay = atoi(optarg);
+                    if(u_delay >= DELAY_MIN && u_delay <= DELAY_MAX)
+                    {
+                         d_flag = 1;
+                    }
+                    else
+                    {
+                         fprintf(stderr, "Supported delay range %d-%d\n", DELAY_MIN, DELAY_MAX);
+                         exit(EXIT_FAILURE);
+                    }
+                    break;
+               case 'h':
+               default:
+                    fprintf(stderr, "Usage: %s [-d ms]\n", basename(argv[0]));
+                    exit(EXIT_FAILURE);
+          }
+     }
+
+     d_flag ? set_timer(u_delay) : set_timer(DELAY);
      signal(SIGALRM, get_data);
 
      initscr();
