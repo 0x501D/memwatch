@@ -118,7 +118,6 @@ void get_data(int signum)
 
      print_info(&memory);
      clear_data(&memory);
-
 }
 
 void print_info(const mem_t *mem)
