@@ -1,3 +1,4 @@
+./autogen.sh
 ./configure --prefix=/usr
 make
 su
