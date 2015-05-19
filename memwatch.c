@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 
      get_data(0);
 
-     while((c = getch()) != 'Q')
+     while((c = getch()) != 'q')
      {
           pause();
      }
