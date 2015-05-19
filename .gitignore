@@ -1,0 +1,6 @@
+.deps/
+Makefile
+config.log
+config.status
+memwatch
+memwatch.o
