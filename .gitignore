@@ -4,3 +4,4 @@ config.log
 config.status
 memwatch
 memwatch.o
+autom4te.cache/
