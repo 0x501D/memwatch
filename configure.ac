@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([memwatch], [0.0.1], [pascal@unixdev.ru])
 AC_CONFIG_SRCDIR([memwatch.c])
-AM_INIT_AUTOMAKE([memwatch], [0.0.1])
+AM_INIT_AUTOMAKE
 
 # Checks for programs.
 AC_PROG_CC
