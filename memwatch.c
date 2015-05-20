@@ -24,6 +24,7 @@ typedef struct mem_s {
      char *swap_total_s, *swap_free_s, *swap_used_s;
      uint32_t mem_total_d, mem_free_d, mem_used_d;
      uint32_t swap_total_d, swap_free_d, swap_used_d;
+     int swap_disabled;
 } mem_t;
 
 enum {
@@ -111,6 +112,7 @@ void get_data(int signum)
      ssize_t read;
      mem_t memory;
      memset(&memory, 0, sizeof(memory));
+     memory.swap_disabled = 0;
 
      if((fp = fopen(MEMFILE, "r")) == NULL)
      {
@@ -162,7 +164,7 @@ void print_info(const mem_t *mem)
 
      for(i = 1; i <= 15; i++)
      {
-          mvaddstr(i, 1, "                       ");
+          mvaddstr(i, 1, "                                        ");
      }
 
      mvaddstr(col, 1, "Memory:");
@@ -176,17 +178,26 @@ void print_info(const mem_t *mem)
      mvaddstr(col, 1, "Used:");
      mvaddstr(col, 10, mem->mem_used_s);
 
-     col++; col++;
-     mvaddstr(col, 1, "Swap:");
-     col++; col++;
-     print_bar(col, swap_bar_used, swap_bar_free);
-     col++; col++;
-     mvaddstr(col, 1, "Total:");
-     mvaddstr(col++, 10, mem->swap_total_s);
-     mvaddstr(col, 1, "Free:");
-     mvaddstr(col++, 10, mem->swap_free_s);
-     mvaddstr(col, 1, "Used:");
-     mvaddstr(col, 10, mem->swap_used_s);
+
+     if(mem->swap_disabled)
+     {
+          col++; col++;
+          mvaddstr(col, 1, "Swap disabled.");
+     }
+     else
+     {
+          col++; col++;
+          mvaddstr(col, 1, "Swap:");
+          col++; col++;
+          print_bar(col, swap_bar_used, swap_bar_free);
+          col++; col++;
+          mvaddstr(col, 1, "Total:");
+          mvaddstr(col++, 10, mem->swap_total_s);
+          mvaddstr(col, 1, "Free:");
+          mvaddstr(col++, 10, mem->swap_free_s);
+          mvaddstr(col, 1, "Used:");
+          mvaddstr(col, 10, mem->swap_used_s);
+     }
 
      refresh();
 }
@@ -212,9 +223,12 @@ void clear_data(mem_t *mem)
      free(mem->mem_free_s);
      free(mem->mem_total_s);
      free(mem->mem_used_s);
-     free(mem->swap_free_s);
-     free(mem->swap_total_s);
-     free(mem->swap_used_s);
+     if(! mem->swap_disabled)
+     {
+          free(mem->swap_free_s);
+          free(mem->swap_total_s);
+          free(mem->swap_used_s);
+     }
 }
 
 void insert_value(mem_t *mem, char *line, int ch)
@@ -239,20 +253,30 @@ void insert_value(mem_t *mem, char *line, int ch)
                mem->mem_used_s = strdup(buf);
                break;
           case FREE_SWAP:
-               mem->swap_free_d = num;
-               mem->swap_free_s = strdup(buf);
-               mem->swap_used_d = mem->swap_total_d - mem->swap_free_d;
-               memset(&buf, 0, sizeof(buf));
-               snprintf(buf, 20, "%d", mem->swap_used_d);
-               mem->swap_used_s = strdup(buf);
+               if(! mem->swap_disabled)
+               {
+                    mem->swap_free_d = num;
+                    mem->swap_free_s = strdup(buf);
+                    mem->swap_used_d = mem->swap_total_d - mem->swap_free_d;
+                    memset(&buf, 0, sizeof(buf));
+                    snprintf(buf, 20, "%d", mem->swap_used_d);
+                    mem->swap_used_s = strdup(buf);
+               }
                break;
           case TOTAL_MEM:
                mem->mem_total_d = num;
                mem->mem_total_s = strdup(buf);
                break;
           case TOTAL_SWAP:
-               mem->swap_total_d = num;
-               mem->swap_total_s = strdup(buf);
+               if(! num)
+               {
+                    mem->swap_disabled = 1;
+               }
+               else
+               {
+                    mem->swap_total_d = num;
+                    mem->swap_total_s = strdup(buf);
+               }
                break;
      }
 }
