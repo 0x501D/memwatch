@@ -13,6 +13,7 @@
 #include <libgen.h>
 #include <sys/time.h>
 
+#define BUFDEC (sizeof(uint64_t) * 4)
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
 #define DELAY 1000
@@ -22,8 +23,8 @@
 typedef struct mem_s {
      char *mem_total_s, *mem_free_s, *mem_used_s;
      char *swap_total_s, *swap_free_s, *swap_used_s;
-     uint32_t mem_total_d, mem_free_d, mem_used_d;
-     uint32_t swap_total_d, swap_free_d, swap_used_d;
+     uint64_t mem_total_d, mem_free_d, mem_used_d;
+     uint64_t swap_total_d, swap_free_d, swap_used_d;
      int swap_disabled;
 } mem_t;
 
@@ -234,13 +235,13 @@ void clear_data(mem_t *mem)
 void insert_value(mem_t *mem, char *line, int ch)
 {
      char *token;
-     char buf[21];
-     uint32_t num;
+     char buf[BUFDEC];
+     uint64_t num;
 
      token = strtok(line, " ");
      token = strtok(NULL, " ");
      num = (atoi(token)) / 1024;
-     snprintf(buf, 20, "%d", num);
+     snprintf(buf, sizeof(buf), "%lu", num);
 
      switch(ch)
      {
@@ -249,7 +250,7 @@ void insert_value(mem_t *mem, char *line, int ch)
                mem->mem_free_s = strdup(buf);
                mem->mem_used_d = mem->mem_total_d - mem->mem_free_d;
                memset(&buf, 0, sizeof(buf));
-               snprintf(buf, 20, "%d", mem->mem_used_d);
+               snprintf(buf, sizeof(buf), "%lu", mem->mem_used_d);
                mem->mem_used_s = strdup(buf);
                break;
           case FREE_SWAP:
@@ -259,7 +260,7 @@ void insert_value(mem_t *mem, char *line, int ch)
                     mem->swap_free_s = strdup(buf);
                     mem->swap_used_d = mem->swap_total_d - mem->swap_free_d;
                     memset(&buf, 0, sizeof(buf));
-                    snprintf(buf, 20, "%d", mem->swap_used_d);
+                    snprintf(buf, sizeof(buf), "%lu", mem->swap_used_d);
                     mem->swap_used_s = strdup(buf);
                }
                break;
