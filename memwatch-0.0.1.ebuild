@@ -10,7 +10,7 @@ SRC_URI="http://unixdev.ru/src/memwatch-0.0.1.tar.gz"
 
 LICENSE="WTFPL"
 SLOT="0"
-KEYWORDS="amd64 x86 ppc sparc"
+KEYWORDS="amd64 x86"
 IUSE=""
 
 DEPEND="sys-libs/ncurses"
