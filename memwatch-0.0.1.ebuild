@@ -17,7 +17,7 @@ DEPEND="sys-libs/ncurses"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
-	einfo "Regenerating autottols files..."
+	einfo "Regenerating autotools files..."
 	./autogen.sh || die "autogen failed"
 }
 
