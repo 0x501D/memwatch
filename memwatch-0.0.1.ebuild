@@ -4,7 +4,7 @@
 
 EAPI=5
 
-DESCRIPTION="Prints memory status in real time"
+DESCRIPTION="interactive memory viewer"
 HOMEPAGE="https://bitbucket.org/PascalRD/memwatch/"
 SRC_URI="http://unixdev.ru/src/memwatch-0.0.1.tar.gz"
 
