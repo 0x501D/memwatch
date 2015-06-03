@@ -11,6 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include <libgen.h>
+#include <errno.h>
 #include <sys/time.h>
 
 #include "memwatch.h"
@@ -223,12 +224,22 @@ void clear_data(mem_t *mem)
 void insert_value(mem_t *mem, char *line, int ch)
 {
      char *token;
+     char *end = NULL;
      char buf[BUFDEC];
      uint64_t num;
+     errno = 0;
 
      token = strtok(line, " ");
      token = strtok(NULL, " ");
-     num = (atoi(token)) / DELIM;
+     num = strtoull(token, &end, 10);
+     if((token + strlen(token)) != end || errno == ERANGE)
+     {
+          num = 0;
+     }
+     else
+     {
+          num /= DELIM;
+     }
      snprintf(buf, sizeof(buf), "%lu", num);
 
      switch(ch)
