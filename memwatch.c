@@ -103,7 +103,7 @@ void get_data(int signum)
           mvaddstr(2, 1, MEMFILE);
           getch();
           endwin();
-          exit(1);
+          exit(EXIT_FAILURE);
      }
 
      while((read = getline(&line, &len, fp)) != -1)
@@ -116,9 +116,13 @@ void get_data(int signum)
           {
                insert_value(&memory, line, TOTAL_MEM);
           }
-          else if(strncmp("MemAvailable:", line, strlen("MemAvailable:")) == 0)
+          else if(strncmp("Buffers:", line, strlen("Buffers:")) == 0)
           {
-               insert_value(&memory, line, AVAIL_MEM);
+               insert_value(&memory, line, BUFF_MEM);
+          }
+          else if(strncmp("Cached:", line, strlen("Cached:")) == 0)
+          {
+               insert_value(&memory, line, CACHE_MEM);
           }
           else if(strncmp("SwapFree:", line, strlen("SwapFree:")) == 0)
           {
@@ -155,17 +159,18 @@ void print_info(const mem_t *mem)
 
      mvaddstr(col, 1, "Memory:");
      col++; col++;
-     mvaddstr(col, 1, "u:");
      print_bar(col, mem_bar_used, mem_bar_free);
      col++; col++;
-     mvaddstr(col, 1, "Total:");
+     mvaddstr(col, 1, "Total");
      mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
-     mvaddstr(col, 1, "Free:");
+     mvaddstr(col, 1, "Free");
      mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
-     mvaddstr(col, 1, "Used:");
+     mvaddstr(col, 1, "Used");
      mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
-     mvaddstr(col, 1, "Avail:");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_avail));
+     mvaddstr(col, 1, "Buff");
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_buff));
+     mvaddstr(col, 1, "Cache");
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_cache));
 
      if(mem->swap_disabled)
      {
@@ -177,14 +182,13 @@ void print_info(const mem_t *mem)
           col++; col++;
           mvaddstr(col, 1, "Swap:");
           col++; col++;
-          mvaddstr(col, 1, "u:");
           print_bar(col, swap_bar_used, swap_bar_free);
           col++; col++;
-          mvaddstr(col, 1, "Total:");
+          mvaddstr(col, 1, "Total");
           mvaddstr(col++, 10, num_to_str(buf, mem->swap_total));
-          mvaddstr(col, 1, "Free:");
+          mvaddstr(col, 1, "Free");
           mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
-          mvaddstr(col, 1, "Used:");
+          mvaddstr(col, 1, "Used");
           mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
      }
 
@@ -194,7 +198,7 @@ void print_info(const mem_t *mem)
 void print_bar(uint32_t col, uint32_t used, uint32_t last)
 {
      size_t i, row;
-     row = 4;
+     row = 2;
 
      mvaddch(col, row - 1, '[');
      for(i = 0; i < used; i++, row++)
@@ -245,8 +249,11 @@ void insert_value(mem_t *mem, char *line, int ch)
           case TOTAL_MEM:
                mem->mem_total = num;
                break;
-          case AVAIL_MEM:
-               mem->mem_avail = num;
+          case BUFF_MEM:
+               mem->mem_buff = num;
+               break;
+          case CACHE_MEM:
+               mem->mem_cache = num;
                break;
           case TOTAL_SWAP:
                if(! num)

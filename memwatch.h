@@ -13,7 +13,8 @@
 #endif
 
 typedef struct mem_s {
-     uint64_t mem_total, mem_free, mem_used, mem_avail;
+     uint64_t mem_total, mem_free, mem_used;
+     uint64_t mem_buff, mem_cache;
      uint64_t swap_total, swap_free, swap_used;
      int swap_disabled;
 } mem_t;
@@ -23,7 +24,8 @@ enum {
      TOTAL_MEM,
      FREE_SWAP,
      TOTAL_SWAP,
-     AVAIL_MEM
+     BUFF_MEM,
+     CACHE_MEM
 };
 
 void set_timer(uint32_t);
