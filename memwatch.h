@@ -8,14 +8,13 @@
 #define DELAY_MIN 100
 #define DELAY_MAX 100000
 #define DELIM 1024
+#ifndef VERSION
 #define VERSION "0.0.2"
+#endif
 
 typedef struct mem_s {
-     char *mem_total_s, *mem_free_s, *mem_used_s;
-     char *mem_avail_s, *mem_buff_s, *mem_cache_s;
-     char *swap_total_s, *swap_free_s, *swap_used_s;
-     uint64_t mem_total_d, mem_free_d, mem_used_d, mem_avail_d;
-     uint64_t swap_total_d, swap_free_d, swap_used_d;
+     uint64_t mem_total, mem_free, mem_used, mem_avail;
+     uint64_t swap_total, swap_free, swap_used;
      int swap_disabled;
 } mem_t;
 
@@ -33,5 +32,6 @@ void insert_value(mem_t *, char *, int);
 void print_info(const mem_t *);
 void clear_data(mem_t *);
 void print_bar(uint32_t, uint32_t, uint32_t);
+char *num_to_str(char *, uint64_t);
 
 #endif /* MEMWATCH_H_ */

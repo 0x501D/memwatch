@@ -134,21 +134,21 @@ void get_data(int signum)
      fclose(fp);
 
      print_info(&memory);
-     clear_data(&memory);
 }
 
 void print_info(const mem_t *mem)
 {
-     float mem_ratio = (float) mem->mem_used_d / mem->mem_total_d;
+     char buf[BUFDEC];
+     float mem_ratio = (float) mem->mem_used / mem->mem_total;
      float mem_bar_used = BAR_LEHGTH * mem_ratio;
      uint32_t mem_bar_free = BAR_LEHGTH - floor(mem_bar_used);
-     float swap_ratio = (float) mem->swap_used_d / mem->swap_total_d;
+     float swap_ratio = (float) mem->swap_used / mem->swap_total;
      float swap_bar_used = BAR_LEHGTH * swap_ratio;
      uint32_t swap_bar_free = BAR_LEHGTH - floor(swap_bar_used);
      size_t i;
      uint16_t col = 1;
 
-     for(i = 1; i <= 15; i++)
+     for(i = 1; i <= 20; i++)
      {
           mvaddstr(i, 1, "                                        ");
      }
@@ -159,13 +159,13 @@ void print_info(const mem_t *mem)
      print_bar(col, mem_bar_used, mem_bar_free);
      col++; col++;
      mvaddstr(col, 1, "Total:");
-     mvaddstr(col++, 10, mem->mem_total_s);
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
      mvaddstr(col, 1, "Free:");
-     mvaddstr(col++, 10, mem->mem_free_s);
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
      mvaddstr(col, 1, "Used:");
-     mvaddstr(col++, 10, mem->mem_used_s);
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
      mvaddstr(col, 1, "Avail:");
-     mvaddstr(col++, 10, mem->mem_avail_s);
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_avail));
 
      if(mem->swap_disabled)
      {
@@ -181,11 +181,11 @@ void print_info(const mem_t *mem)
           print_bar(col, swap_bar_used, swap_bar_free);
           col++; col++;
           mvaddstr(col, 1, "Total:");
-          mvaddstr(col++, 10, mem->swap_total_s);
+          mvaddstr(col++, 10, num_to_str(buf, mem->swap_total));
           mvaddstr(col, 1, "Free:");
-          mvaddstr(col++, 10, mem->swap_free_s);
+          mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
           mvaddstr(col, 1, "Used:");
-          mvaddstr(col, 10, mem->swap_used_s);
+          mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
      }
 
      refresh();
@@ -206,19 +206,6 @@ void print_bar(uint32_t col, uint32_t used, uint32_t last)
           mvaddch(col, row, '-');
      }
      mvaddch(col, row, ']');
-}
-
-void clear_data(mem_t *mem)
-{
-     free(mem->mem_free_s);
-     free(mem->mem_total_s);
-     free(mem->mem_used_s);
-     if(! mem->swap_disabled)
-     {
-          free(mem->swap_free_s);
-          free(mem->swap_total_s);
-          free(mem->swap_used_s);
-     }
 }
 
 void insert_value(mem_t *mem, char *line, int ch)
@@ -245,30 +232,21 @@ void insert_value(mem_t *mem, char *line, int ch)
      switch(ch)
      {
           case FREE_MEM:
-               mem->mem_free_d = num;
-               mem->mem_free_s = strdup(buf);
-               mem->mem_used_d = mem->mem_total_d - mem->mem_free_d;
-               memset(&buf, 0, sizeof(buf));
-               snprintf(buf, sizeof(buf), "%lu", mem->mem_used_d);
-               mem->mem_used_s = strdup(buf);
+               mem->mem_free = num;
+               mem->mem_used = mem->mem_total - mem->mem_free;
                break;
           case FREE_SWAP:
                if(! mem->swap_disabled)
                {
-                    mem->swap_free_d = num;
-                    mem->swap_free_s = strdup(buf);
-                    mem->swap_used_d = mem->swap_total_d - mem->swap_free_d;
-                    memset(&buf, 0, sizeof(buf));
-                    snprintf(buf, sizeof(buf), "%lu", mem->swap_used_d);
-                    mem->swap_used_s = strdup(buf);
+                    mem->swap_free = num;
+                    mem->swap_used = mem->swap_total - mem->swap_free;
                }
                break;
           case TOTAL_MEM:
-               mem->mem_total_d = num;
-               mem->mem_total_s = strdup(buf);
+               mem->mem_total = num;
                break;
           case AVAIL_MEM:
-               mem->mem_avail_s = strdup(buf);
+               mem->mem_avail = num;
                break;
           case TOTAL_SWAP:
                if(! num)
@@ -277,9 +255,15 @@ void insert_value(mem_t *mem, char *line, int ch)
                }
                else
                {
-                    mem->swap_total_d = num;
-                    mem->swap_total_s = strdup(buf);
+                    mem->swap_total = num;
                }
                break;
      }
+}
+
+char *num_to_str(char *buf, uint64_t num)
+{
+     snprintf(buf, BUFDEC, "%lu", num);
+
+     return buf;
 }
