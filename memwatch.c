@@ -162,15 +162,15 @@ void print_info(const mem_t *mem)
      print_bar(col, mem_bar_used, mem_bar_free);
      col++; col++;
      mvaddstr(col, 1, "Total");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
+     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_total));
      mvaddstr(col, 1, "Free");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
+     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_free));
      mvaddstr(col, 1, "Used");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
+     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_used));
      mvaddstr(col, 1, "Buff");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_buff));
+     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_buff));
      mvaddstr(col, 1, "Cache");
-     mvaddstr(col++, 10, num_to_str(buf, mem->mem_cache));
+     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_cache));
 
      if(mem->swap_disabled)
      {
@@ -185,11 +185,11 @@ void print_info(const mem_t *mem)
           print_bar(col, swap_bar_used, swap_bar_free);
           col++; col++;
           mvaddstr(col, 1, "Total");
-          mvaddstr(col++, 10, num_to_str(buf, mem->swap_total));
+          mvaddstr(col++, 10, NUM_TO_STR(buf, mem->swap_total));
           mvaddstr(col, 1, "Free");
-          mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
+          mvaddstr(col++, 10, NUM_TO_STR(buf, mem->swap_free));
           mvaddstr(col, 1, "Used");
-          mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
+          mvaddstr(col, 10, NUM_TO_STR(buf, mem->swap_used));
      }
 
      refresh();
@@ -266,11 +266,4 @@ void insert_value(mem_t *mem, char *line, int ch)
                }
                break;
      }
-}
-
-char *num_to_str(char *buf, uint64_t num)
-{
-     snprintf(buf, BUFDEC, "%lu", num);
-
-     return buf;
 }
