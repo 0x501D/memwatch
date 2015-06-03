@@ -32,7 +32,6 @@ void set_timer(uint32_t);
 void get_data(int);
 void insert_value(mem_t *, char *, int);
 void print_info(const mem_t *);
-void clear_data(mem_t *);
 void print_bar(uint32_t, uint32_t, uint32_t);
 char *num_to_str(char *, uint64_t);
 
