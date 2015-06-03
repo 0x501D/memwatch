@@ -19,18 +19,24 @@
 #define DELAY 1000
 #define DELAY_MIN 100
 #define DELAY_MAX 100000
+#define DELIM 1024
+#define VERSION "0.0.2"
 
 typedef struct mem_s {
      char *mem_total_s, *mem_free_s, *mem_used_s;
+     char *mem_avail_s, *mem_buff_s, *mem_cache_s;
      char *swap_total_s, *swap_free_s, *swap_used_s;
-     uint64_t mem_total_d, mem_free_d, mem_used_d;
+     uint64_t mem_total_d, mem_free_d, mem_used_d, mem_avail_d;
      uint64_t swap_total_d, swap_free_d, swap_used_d;
      int swap_disabled;
 } mem_t;
 
 enum {
-     FREE_MEM = 1, TOTAL_MEM = 2,
-     FREE_SWAP = 3, TOTAL_SWAP = 4
+     FREE_MEM,
+     TOTAL_MEM,
+     FREE_SWAP,
+     TOTAL_SWAP,
+     AVAIL_MEM
 };
 
 void set_timer(uint32_t);
@@ -46,7 +52,7 @@ int main(int argc, char **argv)
      int opt, d_flag, u_delay;
      d_flag = 0;
 
-     while((opt = getopt(argc, argv, "hd:")) != -1)
+     while((opt = getopt(argc, argv, "hvd:")) != -1)
      {
           switch(opt)
           {
@@ -62,6 +68,9 @@ int main(int argc, char **argv)
                          exit(EXIT_FAILURE);
                     }
                     break;
+               case 'v':
+                         printf("memwatch v%s\n", VERSION);
+                         exit(EXIT_SUCCESS);
                case 'h':
                default:
                     fprintf(stderr, "Usage: %s [-d ms]\n", basename(argv[0]));
@@ -112,6 +121,8 @@ void get_data(int signum)
      size_t len = 0;
      ssize_t read;
      mem_t memory;
+
+     (void) signum;
      memset(&memory, 0, sizeof(memory));
      memory.swap_disabled = 0;
 
@@ -134,6 +145,10 @@ void get_data(int signum)
           else if(strncmp("MemTotal:", line, strlen("MemTotal:")) == 0)
           {
                insert_value(&memory, line, TOTAL_MEM);
+          }
+          else if(strncmp("MemAvailable:", line, strlen("MemAvailable:")) == 0)
+          {
+               insert_value(&memory, line, AVAIL_MEM);
           }
           else if(strncmp("SwapFree:", line, strlen("SwapFree:")) == 0)
           {
@@ -170,6 +185,7 @@ void print_info(const mem_t *mem)
 
      mvaddstr(col, 1, "Memory:");
      col++; col++;
+     mvaddstr(col, 1, "u:");
      print_bar(col, mem_bar_used, mem_bar_free);
      col++; col++;
      mvaddstr(col, 1, "Total:");
@@ -177,8 +193,9 @@ void print_info(const mem_t *mem)
      mvaddstr(col, 1, "Free:");
      mvaddstr(col++, 10, mem->mem_free_s);
      mvaddstr(col, 1, "Used:");
-     mvaddstr(col, 10, mem->mem_used_s);
-
+     mvaddstr(col++, 10, mem->mem_used_s);
+     mvaddstr(col, 1, "Avail:");
+     mvaddstr(col++, 10, mem->mem_avail_s);
 
      if(mem->swap_disabled)
      {
@@ -190,6 +207,7 @@ void print_info(const mem_t *mem)
           col++; col++;
           mvaddstr(col, 1, "Swap:");
           col++; col++;
+          mvaddstr(col, 1, "u:");
           print_bar(col, swap_bar_used, swap_bar_free);
           col++; col++;
           mvaddstr(col, 1, "Total:");
@@ -205,9 +223,10 @@ void print_info(const mem_t *mem)
 
 void print_bar(uint32_t col, uint32_t used, uint32_t last)
 {
-     size_t i, row = 2;
+     size_t i, row;
+     row = 4;
 
-     mvaddch(col, 1, '[');
+     mvaddch(col, row - 1, '[');
      for(i = 0; i < used; i++, row++)
      {
           mvaddch(col, row, '#');
@@ -240,7 +259,7 @@ void insert_value(mem_t *mem, char *line, int ch)
 
      token = strtok(line, " ");
      token = strtok(NULL, " ");
-     num = (atoi(token)) / 1024;
+     num = (atoi(token)) / DELIM;
      snprintf(buf, sizeof(buf), "%lu", num);
 
      switch(ch)
@@ -267,6 +286,9 @@ void insert_value(mem_t *mem, char *line, int ch)
           case TOTAL_MEM:
                mem->mem_total_d = num;
                mem->mem_total_s = strdup(buf);
+               break;
+          case AVAIL_MEM:
+               mem->mem_avail_s = strdup(buf);
                break;
           case TOTAL_SWAP:
                if(! num)
