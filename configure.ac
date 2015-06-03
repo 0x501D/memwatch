@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([memwatch], [0.0.1], [pascal@unixdev.ru])
+AC_INIT([memwatch], [0.0.2], [pascal@unixdev.ru])
 AC_CONFIG_SRCDIR([memwatch.c])
 AM_INIT_AUTOMAKE
 
@@ -26,7 +26,7 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([floor memset strdup])
+AC_CHECK_FUNCS([floor memset strtoull])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
