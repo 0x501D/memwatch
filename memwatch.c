@@ -84,7 +84,7 @@ void set_timer(uint32_t usec)
      setitimer(ITIMER_REAL, &timer, NULL);
 }
 
-void get_data(int signum)
+void get_data(UNUSED int signum)
 {
      FILE *fp;
      char *line = NULL;
@@ -92,7 +92,6 @@ void get_data(int signum)
      ssize_t read;
      mem_t memory;
 
-     (void) signum;
      memset(&memory, 0, sizeof(memory));
      memory.swap_disabled = 0;
 
@@ -142,7 +141,7 @@ void get_data(int signum)
 
 void print_info(const mem_t *mem)
 {
-     char buf[BUFDEC];
+     char buf[BUFDEC] = {0};
      float mem_ratio = (float) mem->mem_used / mem->mem_total;
      float mem_bar_used = BAR_LEHGTH * mem_ratio;
      uint32_t mem_bar_free = BAR_LEHGTH - floor(mem_bar_used);
@@ -162,15 +161,15 @@ void print_info(const mem_t *mem)
      print_bar(col, mem_bar_used, mem_bar_free);
      col++; col++;
      mvaddstr(col, 1, "Total");
-     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_total));
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
      mvaddstr(col, 1, "Free");
-     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_free));
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
      mvaddstr(col, 1, "Used");
-     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_used));
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
      mvaddstr(col, 1, "Buff");
-     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_buff));
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_buff));
      mvaddstr(col, 1, "Cache");
-     mvaddstr(col++, 10, NUM_TO_STR(buf, mem->mem_cache));
+     mvaddstr(col++, 10, num_to_str(buf, mem->mem_cache));
 
      if(mem->swap_disabled)
      {
@@ -185,11 +184,11 @@ void print_info(const mem_t *mem)
           print_bar(col, swap_bar_used, swap_bar_free);
           col++; col++;
           mvaddstr(col, 1, "Total");
-          mvaddstr(col++, 10, NUM_TO_STR(buf, mem->swap_total));
+          mvaddstr(col++, 10, num_to_str(buf, mem->swap_total));
           mvaddstr(col, 1, "Free");
-          mvaddstr(col++, 10, NUM_TO_STR(buf, mem->swap_free));
+          mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
           mvaddstr(col, 1, "Used");
-          mvaddstr(col, 10, NUM_TO_STR(buf, mem->swap_used));
+          mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
      }
 
      refresh();
@@ -266,4 +265,10 @@ void insert_value(mem_t *mem, char *line, int ch)
                }
                break;
      }
+}
+
+char *num_to_str(char* buf, uint64_t num)
+{
+    snprintf(buf, BUFDEC, "%lu", num);
+    return buf;
 }

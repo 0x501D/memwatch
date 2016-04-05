@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([memwatch], [0.0.2], [pascal@unixdev.ru])
+AC_INIT([memwatch], [0.1.0], [pascal@unixdev.ru])
 AC_CONFIG_SRCDIR([memwatch.c])
 AM_INIT_AUTOMAKE
 

@@ -2,7 +2,7 @@
 #define MEMWATCH_H_
 
 #define BUFDEC (sizeof(uint64_t) * 4)
-#define NUM_TO_STR(s,d) ({snprintf(s, BUFDEC, "%lu", d); s;})
+#define UNUSED __attribute__((unused))
 
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
@@ -11,7 +11,7 @@
 #define DELAY_MAX 100000
 #define DELIM 1024
 #ifndef VERSION
-#define VERSION "0.0.2"
+#define VERSION "0.1.0"
 #endif
 
 typedef struct mem_s {
@@ -35,5 +35,6 @@ void get_data(int);
 void insert_value(mem_t *, char *, int);
 void print_info(const mem_t *);
 void print_bar(uint32_t, uint32_t, uint32_t);
+char *num_to_str(char*, uint64_t);
 
 #endif /* MEMWATCH_H_ */
