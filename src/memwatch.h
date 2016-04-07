@@ -1,8 +1,16 @@
 #ifndef MEMWATCH_H_
 #define MEMWATCH_H_
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <curses.h>
+#include <string.h>
+#include <signal.h>
+#include <math.h>
+#include <errno.h>
+#include <sys/time.h>
 
 #define BUFDEC (sizeof(uint64_t) * 4)
 #define UNUSED __attribute__((unused))

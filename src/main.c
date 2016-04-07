@@ -1,51 +1,43 @@
-#include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
-#include <curses.h>
-#include <string.h>
-#include <math.h>
-#include <errno.h>
-#include <sys/time.h>
-
 #include <memwatch.h>
 #include <options.h>
+#include <common.h>
 
 int main(int argc, char **argv)
 {
-     int c;
-     options_t options;
+    int c;
+    options_t options;
 
-     memset(&options, 0, sizeof(options));
+    memset(&options, 0, sizeof(options));
 
-     parse_options(argc, argv, &options);
+    parse_options(argc, argv, &options);
 
-     if (options.flags & FLAG_DELAY)
-     {
+    if (options.flags & FLAG_DELAY)
+    {
         set_timer(options.delay);
-     }
-     else
-     {
+    }
+    else
+    {
         set_timer(DELAY);
-     }
+    }
 
-     signal(SIGALRM, get_data);
+    signal(SIGALRM, get_data);
 
-     initscr();
-     noecho();
-     curs_set(0);
-     cbreak();
-     clear();
+    initscr();
+    noecho();
+    curs_set(0);
+    cbreak();
+    clear();
 
-     get_data(0);
+    get_data(0);
 
-     while((c = getch()) != 'q')
-     {
-          pause();
-     }
+    while ((c = getch()) != 'q')
+    {
+        pause();
+    }
 
-     endwin();
+    endwin();
 
-     return 0;
+    return 0;
 }
 
 void set_timer(uint32_t usec)
@@ -244,10 +236,4 @@ void insert_value(mem_t *mem, char *line, int ch)
                }
                break;
      }
-}
-
-char *num_to_str(char* buf, uint64_t num)
-{
-    snprintf(buf, BUFDEC, "%lu", num);
-    return buf;
 }
