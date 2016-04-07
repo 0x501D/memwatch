@@ -1,6 +1,9 @@
 #ifndef MEMWATCH_H_
 #define MEMWATCH_H_
 
+#include <stdint.h>
+#include <stdlib.h>
+
 #define BUFDEC (sizeof(uint64_t) * 4)
 #define UNUSED __attribute__((unused))
 
@@ -13,6 +16,15 @@
 #ifndef VERSION
 #define VERSION "0.1.0"
 #endif
+
+enum {
+    FLAG_DELAY = 1
+};
+
+typedef struct options_s {
+    uint32_t delay;
+    int flags;
+} options_t;
 
 typedef struct mem_s {
      uint64_t mem_total, mem_free, mem_used;

@@ -10,7 +10,8 @@ include_directories(${CURSES_INCLUDE_DIR})
 
 include_directories(.)
 add_executable(memwatch
-               main.c)
+               main.c
+               options.c)
 target_link_libraries(${PROJECT_NAME}
                     ${CURSES_LIBRARIES}
                     m)

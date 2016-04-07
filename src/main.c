@@ -1,50 +1,33 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <curses.h>
 #include <string.h>
 #include <math.h>
-#include <libgen.h>
 #include <errno.h>
 #include <sys/time.h>
 
 #include <memwatch.h>
+#include <options.h>
 
 int main(int argc, char **argv)
 {
      int c;
-     int opt, d_flag, u_delay;
-     d_flag = 0;
+     options_t options;
 
-     while((opt = getopt(argc, argv, "hvd:")) != -1)
+     memset(&options, 0, sizeof(options));
+
+     parse_options(argc, argv, &options);
+
+     if (options.flags & FLAG_DELAY)
      {
-          switch(opt)
-          {
-               case 'd':
-                    u_delay = atoi(optarg);
-                    if(u_delay >= DELAY_MIN && u_delay <= DELAY_MAX)
-                    {
-                         d_flag = 1;
-                    }
-                    else
-                    {
-                         fprintf(stderr, "Supported delay range %d-%d\n", DELAY_MIN, DELAY_MAX);
-                         exit(EXIT_FAILURE);
-                    }
-                    break;
-               case 'v':
-                         printf("memwatch v%s\n", VERSION);
-                         exit(EXIT_SUCCESS);
-               case 'h':
-               default:
-                    fprintf(stderr, "Usage: %s [-d ms]\n", basename(argv[0]));
-                    exit(EXIT_FAILURE);
-          }
+        set_timer(options.delay);
+     }
+     else
+     {
+        set_timer(DELAY);
      }
 
-     d_flag ? set_timer(u_delay) : set_timer(DELAY);
      signal(SIGALRM, get_data);
 
      initscr();
