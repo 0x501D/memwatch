@@ -48,4 +48,9 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 exit(EXIT_FAILURE);
         }
     }
+
+    if (!(options->flags & FLAG_DELAY))
+    {
+        options->delay = DEFAULT_DELAY;
+    }
 }

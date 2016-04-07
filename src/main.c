@@ -11,15 +11,7 @@ int main(int argc, char **argv)
 
     parse_options(argc, argv, &options);
 
-    if (options.flags & FLAG_DELAY)
-    {
-        set_timer(options.delay);
-    }
-    else
-    {
-        set_timer(DELAY);
-    }
-
+    set_timer(options.delay);
     signal(SIGALRM, get_data);
 
     initscr();
