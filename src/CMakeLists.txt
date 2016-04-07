@@ -12,7 +12,8 @@ include_directories(.)
 add_executable(memwatch
                main.c
                options.c
-               common.c)
+               common.c
+               draw.c)
 target_link_libraries(${PROJECT_NAME}
                     ${CURSES_LIBRARIES}
                     m)
