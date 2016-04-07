@@ -1,7 +1,3 @@
-/* This programm prints memory info in real time. 
- * compile: gcc memwatch.c -o memwatch -lcurses -lm -Wall 
- * author: PascalRD <pascal at unixdev ru> */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -14,7 +10,7 @@
 #include <errno.h>
 #include <sys/time.h>
 
-#include "memwatch.h"
+#include <memwatch.h>
 
 int main(int argc, char **argv)
 {

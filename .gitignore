@@ -1,14 +1,1 @@
-.deps/
-Makefile
-config.log
-config.status
-memwatch
-memwatch.o
-autom4te.cache/
-Makefile.in
-aclocal.m4
-configure
-depcomp
-install-sh
-missing
-compile
+build
