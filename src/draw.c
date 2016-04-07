@@ -73,7 +73,7 @@ static void print_info(const mem_t *mem)
     size_t i;
     uint16_t col = 1;
 
-    for(i = 1; i <= 20; i++)
+    for (i = 1; i <= 20; i++)
     {
          mvaddstr(i, 1, ALOTOFSPACES);
     }
@@ -122,11 +122,11 @@ static void print_bar(uint32_t col, uint32_t used, uint32_t last)
     row = 2;
 
     mvaddch(col, row - 1, '[');
-    for(i = 0; i < used; i++, row++)
+    for (i = 0; i < used; i++, row++)
     {
          mvaddch(col, row, '#');
     }
-    for(i = 0; i < last; i++, row++)
+    for (i = 0; i < last; i++, row++)
     {
          mvaddch(col, row, '-');
     }
@@ -146,11 +146,11 @@ static void insert_value(mem_t *mem, char *line, int ch)
     num = strtoull(token, &end, 10);
     if ((token + strlen(token)) != end || errno == ERANGE)
     {
-         num = 0;
+        num = 0;
     }
     else
     {
-         num /= DELIM;
+        num /= DELIM;
     }
     snprintf(buf, sizeof(buf), "%lu", num);
 
