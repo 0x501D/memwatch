@@ -12,17 +12,12 @@ int main(int argc, char **argv)
 
     parse_options(argc, argv, &options);
 
-    set_timer(options.delay);
-    signal(SIGALRM, get_data);
-
     config_curses();
 
-    get_data(0);
-
-    while ((c = getch()) != 'q')
+    do
     {
-        pause();
-    }
+        get_data(&options);
+    } while ((c = getch()) != 'q');
 
     endwin();
 

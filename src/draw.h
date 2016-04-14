@@ -3,6 +3,6 @@
 
 #define ALOTOFSPACES "                                        "
 
-void get_data(UNUSED int signum);
+void get_data(const options_t *options);
 
 #endif /* DRAW_H_ */
