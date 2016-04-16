@@ -16,6 +16,7 @@ void get_data(UNUSED const options_t *options)
 
     memset(&memory, 0, sizeof(memory));
     memory.swap_disabled = 0;
+    memory.options = options;
 
     if ((fp = fopen(MEMFILE, "r")) == NULL)
     {
@@ -78,7 +79,7 @@ static void print_info(const mem_t *mem)
          mvaddstr(i, 1, ALOTOFSPACES);
     }
 
-    mvaddstr(col, 1, "Memory:");
+    mvaddstr(col, 1, gen_title(buf, "Memory", mem->options->flags));
     col++; col++;
     print_bar(col, mem_bar_used, mem_bar_free);
     col++; col++;
@@ -101,7 +102,7 @@ static void print_info(const mem_t *mem)
     else
     {
          col++; col++;
-         mvaddstr(col, 1, "Swap:");
+         mvaddstr(col, 1, gen_title(buf, "Swap", mem->options->flags));
          col++; col++;
          print_bar(col, swap_bar_used, swap_bar_free);
          col++; col++;
@@ -150,7 +151,18 @@ static void insert_value(mem_t *mem, char *line, int ch)
     }
     else
     {
-        num /= DELIM;
+        if (mem->options->flags & MEGABYTES_FL)
+        {
+            num /= 1024;
+        }
+        else if (mem->options->flags & GIGABYTES_FL)
+        {
+            num /= 1024 * 1024;
+        }
+        else if (mem->options->flags & BYTES_FL)
+        {
+            num *= 1024;
+        }
     }
     snprintf(buf, sizeof(buf), "%lu", num);
 

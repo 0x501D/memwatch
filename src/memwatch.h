@@ -18,15 +18,20 @@
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
 #define DEFAULT_DELAY 1000
+#define DEFAULT_DELIM 1024
 #define DELAY_MIN 100
 #define DELAY_MAX 100000
-#define DELIM 1024
+#define CLEAR_SZ_FLAGS 0x1e
 #ifndef VERSION
 #define VERSION "0.1.0"
 #endif
 
 enum {
-    FLAG_DELAY = 1
+    DELAY_FL     = 1,
+    MEGABYTES_FL = 1 << 1,
+    GIGABYTES_FL = 1 << 2,
+    KILOBYTES_FL = 1 << 3,
+    BYTES_FL     = 1 << 4
 };
 
 typedef struct options_s {
@@ -35,19 +40,20 @@ typedef struct options_s {
 } options_t;
 
 typedef struct mem_s {
-     uint64_t mem_total, mem_free, mem_used;
-     uint64_t mem_buff, mem_cache;
-     uint64_t swap_total, swap_free, swap_used;
-     int swap_disabled;
+    uint64_t mem_total, mem_free, mem_used;
+    uint64_t mem_buff, mem_cache;
+    uint64_t swap_total, swap_free, swap_used;
+    int swap_disabled;
+    const options_t* options;
 } mem_t;
 
 enum {
-     FREE_MEM,
-     TOTAL_MEM,
-     FREE_SWAP,
-     TOTAL_SWAP,
-     BUFF_MEM,
-     CACHE_MEM
+    FREE_MEM,
+    TOTAL_MEM,
+    FREE_SWAP,
+    TOTAL_SWAP,
+    BUFF_MEM,
+    CACHE_MEM
 };
 
 #endif /* MEMWATCH_H_ */

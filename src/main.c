@@ -29,6 +29,18 @@ int main(int argc, char **argv)
             case 'q':
                 quit = 1;
                 break;
+            case 'k':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= KILOBYTES_FL;
+                break;
+            case 'm':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= MEGABYTES_FL;
+                break;
+            case 'b':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= BYTES_FL;
+                break;
         }
 
         if (timer > 0)

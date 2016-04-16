@@ -25,7 +25,6 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 if (options->delay >= DELAY_MIN &&
                     options->delay <= DELAY_MAX)
                 {
-                    options->flags |= FLAG_DELAY;
                     options->delay *= 1000;
                 }
                 else
@@ -50,8 +49,9 @@ void parse_options(int argc, char *const argv[], options_t *options)
         }
     }
 
-    if (!(options->flags & FLAG_DELAY))
+    if (!(options->flags & DELAY_FL))
     {
         options->delay = DEFAULT_DELAY * 1000;
     }
+    options->flags |= MEGABYTES_FL;
 }
