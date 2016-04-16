@@ -30,7 +30,7 @@ enum {
 };
 
 typedef struct options_s {
-    uint32_t delay;
+    int32_t delay;
     int flags;
 } options_t;
 
