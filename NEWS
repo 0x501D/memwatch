@@ -1,7 +1,13 @@
-v0.0.1 - 19 May 2015
+v0.1.0 - 16 Apr 2016
 --------------------
-    - initial commit
-    
+    - Use cmake instead of autotools.
+    - Code refactoring.
+    - Add hotkeys for display the amount of memory in Mb,Gb,Kb and bytes.
+
 v0.0.2 - 03 Jun 2015
 --------------------
     - Add Buffer and Cached memory info.
+
+v0.0.1 - 19 May 2015
+--------------------
+    - initial commit

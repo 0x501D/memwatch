@@ -1,5 +1,6 @@
-./autogen.sh
-./configure --prefix=/usr
+git clone https://bitbucket.org/PascalRD/memwatch
+cd memwatch && mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ../
 make
 su
 make install
