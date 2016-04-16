@@ -6,7 +6,7 @@ static void print_bar(uint32_t col, uint32_t used, uint32_t last);
 static void print_info(const mem_t *mem);
 static void insert_value(mem_t *mem, char *line, int ch);
 
-void get_data(UNUSED const options_t *options)
+void get_data(const options_t *options)
 {
     FILE *fp;
     char *line = NULL;
