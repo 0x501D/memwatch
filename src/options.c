@@ -26,6 +26,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
                     options->delay <= DELAY_MAX)
                 {
                     options->delay *= 1000;
+                    options->flags |= DELAY_FL;
                 }
                 else
                 {
