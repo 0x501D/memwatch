@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <libgen.h>
 
 #include <memwatch.h>
 
-static void print_help(FILE *s, char *const prog)
+static void print_help(FILE *out)
 {
-    fprintf(s, "Usage: %s [options]\n%s\n", basename(prog),
-               " -d ms: refresh timeout in milliseconds\n"
-               " -v: print version\n"
-               " -h: print help and exit");
+    fprintf(out, _("Usage: %s [options]\n"), PACKAGENAME);
+    fputs(_(" -d ms: refresh timeout in milliseconds\n"), out);
+    fputs(_(" -v: print version\n"), out);
+    fputs(_(" -h: print help and exit\n"), out);
 }
 
 void parse_options(int argc, char *const argv[], options_t *options)
@@ -41,11 +40,11 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 exit(EXIT_SUCCESS);
 
             case 'h':
-                print_help(stdout, argv[0]);
+                print_help(stdout);
                 exit(EXIT_SUCCESS);
 
             default:
-                print_help(stderr, argv[0]);
+                print_help(stderr);
                 exit(EXIT_FAILURE);
         }
     }

@@ -10,10 +10,18 @@
 #include <signal.h>
 #include <math.h>
 #include <errno.h>
+#include <libintl.h>
+#include <locale.h>
 #include <sys/time.h>
 
+#define PACKAGENAME "memwatch"
 #define BUFDEC (sizeof(uint64_t) * 4)
 #define UNUSED __attribute__((unused))
+#define _(text) gettext(text)
+
+#ifndef LOCALEDIR
+#define LOCALEDIR "/usr/share/locale"
+#endif
 
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
@@ -22,8 +30,9 @@
 #define DELAY_MIN 100
 #define DELAY_MAX 100000
 #define CLEAR_SZ_FLAGS 0x1e
+
 #ifndef VERSION
-#define VERSION "0.1.0"
+#define VERSION "0.2.0"
 #endif
 
 enum {

@@ -9,6 +9,10 @@ int main(int argc, char **argv)
     int32_t timer;
     options_t options;
 
+    setlocale(LC_ALL, "");
+    bindtextdomain(PACKAGENAME, LOCALEDIR);
+    textdomain(PACKAGENAME);
+
     memset(&options, 0, sizeof(options));
 
     parse_options(argc, argv, &options);

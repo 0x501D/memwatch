@@ -21,7 +21,7 @@ void get_data(const options_t *options)
     if ((fp = fopen(MEMFILE, "r")) == NULL)
     {
          nocbreak();
-         mvaddstr(1, 1, "Error opening file:");
+         mvaddstr(1, 1, _("Error opening file:"));
          mvaddstr(2, 1, MEMFILE);
          getch();
          endwin();
@@ -79,38 +79,38 @@ static void print_info(const mem_t *mem)
          mvaddstr(i, 1, ALOTOFSPACES);
     }
 
-    mvaddstr(col, 1, gen_title(buf, "Memory", mem->options->flags));
+    mvaddstr(col, 1, gen_title(buf, _("Memory"), mem->options->flags));
     col++; col++;
     print_bar(col, mem_bar_used, mem_bar_free);
     col++; col++;
-    mvaddstr(col, 1, "Total");
+    mvaddstr(col, 1, _("Total"));
     mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
-    mvaddstr(col, 1, "Free");
+    mvaddstr(col, 1, _("Free"));
     mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
-    mvaddstr(col, 1, "Used");
+    mvaddstr(col, 1, _("Used"));
     mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
-    mvaddstr(col, 1, "Buff");
+    mvaddstr(col, 1, _("Buff"));
     mvaddstr(col++, 10, num_to_str(buf, mem->mem_buff));
-    mvaddstr(col, 1, "Cache");
+    mvaddstr(col, 1, _("Cache"));
     mvaddstr(col++, 10, num_to_str(buf, mem->mem_cache));
 
     if (mem->swap_disabled)
     {
          col++; col++;
-         mvaddstr(col, 1, "Swap disabled.");
+         mvaddstr(col, 1, _("Swap disabled."));
     }
     else
     {
          col++; col++;
-         mvaddstr(col, 1, gen_title(buf, "Swap", mem->options->flags));
+         mvaddstr(col, 1, gen_title(buf, _("Swap"), mem->options->flags));
          col++; col++;
          print_bar(col, swap_bar_used, swap_bar_free);
          col++; col++;
-         mvaddstr(col, 1, "Total");
+         mvaddstr(col, 1, _("Total"));
          mvaddstr(col++, 10, num_to_str(buf, mem->swap_total));
-         mvaddstr(col, 1, "Free");
+         mvaddstr(col, 1, _("Free"));
          mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
-         mvaddstr(col, 1, "Used");
+         mvaddstr(col, 1, _("Used"));
          mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
     }
 
