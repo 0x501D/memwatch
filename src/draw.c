@@ -30,27 +30,27 @@ void get_data(const options_t *options)
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
-         if (strncmp("MemFree:", line, strlen("MemFree:")) == 0)
+         if (strncmp(KEYMEMFREE, line, strlen(KEYMEMFREE)) == 0)
          {
               insert_value(&memory, line, FREE_MEM);
          }
-         else if (strncmp("MemTotal:", line, strlen("MemTotal:")) == 0)
+         else if (strncmp(KEYMEMTOTAL, line, strlen(KEYMEMTOTAL)) == 0)
          {
               insert_value(&memory, line, TOTAL_MEM);
          }
-         else if (strncmp("Buffers:", line, strlen("Buffers:")) == 0)
+         else if (strncmp(KEYBUFF, line, strlen(KEYBUFF)) == 0)
          {
               insert_value(&memory, line, BUFF_MEM);
          }
-         else if (strncmp("Cached:", line, strlen("Cached:")) == 0)
+         else if (strncmp(KEYCACHED, line, strlen(KEYCACHED)) == 0)
          {
               insert_value(&memory, line, CACHE_MEM);
          }
-         else if (strncmp("SwapFree:", line, strlen("SwapFree:")) == 0)
+         else if (strncmp(KEYSWFREE, line, strlen(KEYSWFREE)) == 0)
          {
               insert_value(&memory, line, FREE_SWAP);
          }
-         else if (strncmp("SwapTotal:", line, strlen("SwapTotal:")) == 0)
+         else if (strncmp(KEYSWTOTAL, line, strlen(KEYSWTOTAL)) == 0)
          {
               insert_value(&memory, line, TOTAL_SWAP);
          }
