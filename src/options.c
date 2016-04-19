@@ -29,7 +29,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 }
                 else
                 {
-                     fprintf(stderr, "Supported delay range %d-%d\n", 
+                     fprintf(stderr, _("Supported delay range %d-%d\n"),
                              DELAY_MIN, DELAY_MAX);
                      exit(EXIT_FAILURE);
                 }
