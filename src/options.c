@@ -36,7 +36,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 break;
 
             case 'v':
-                printf("memwatch v%s\n", VERSION);
+                printf("%s v%s\n", PACKAGENAME, VERSION);
                 exit(EXIT_SUCCESS);
 
             case 'h':
