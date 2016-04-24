@@ -1,0 +1,67 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+/* Command-line options:
+    -n -t -j 1 -N get_mem_field */
+%}
+struct mem_field {
+    char *name;
+    uint64_t value;
+};
+%%
+MemTotal, 0
+MemFree, 0
+MemAvailable, 0
+Buffers, 0
+Cached, 0
+SwapCached, 0
+Active, 0
+Inactive, 0
+Active(anon), 0
+Inactive(anon), 0
+Active(file), 0
+Inactive(file), 0
+Unevictable, 0
+Mlocked, 0
+SwapTotal, 0
+SwapFree, 0
+Dirty, 0
+Writeback, 0
+AnonPages, 0
+Mapped, 0
+Shmem, 0
+Slab, 0
+SReclaimable, 0
+SUnreclaim, 0
+KernelStack, 0
+PageTables, 0
+NFS_Unstable, 0
+Bounce, 0
+WritebackTmp, 0
+CommitLimit, 0
+Committed_AS, 0
+VmallocTotal, 0
+VmallocUsed, 0
+VmallocChunk, 0
+HugePages_Total, 0
+HugePages_Free, 0
+HugePages_Rsvd, 0
+HugePages_Surp, 0
+Hugepagesize, 0
+DirectMap4k, 0
+DirectMap2M, 0
+%%
+#ifdef DEBUG
+int main(void)
+{
+    struct mem_field *p = get_mem_field("NFS_Unstable", strlen("NFS_Unstable"));
+    if (p)
+    {
+        p->value = 42;
+        printf("%lu\n", p->value);
+    }
+
+    return 0;
+}
+#endif /*DEBUG*/
