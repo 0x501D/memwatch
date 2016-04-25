@@ -1,8 +1,28 @@
 #include <memwatch.h>
 
-char *num_to_str(char* buf, uint64_t num)
+char *num_to_str(char* buf, uint64_t num, int flags)
 {
-    snprintf(buf, BUFDEC, "%lu", num);
+    uint64_t value = 0;
+
+    if (flags & MEGABYTES_FL)
+    {
+        value = num / 1024;
+    }
+    else if (flags & GIGABYTES_FL)
+    {
+        value = num * 1024 * 1024;
+    }
+    else if (flags & BYTES_FL)
+    {
+        value = num * 1024;
+    }
+    else
+    {
+        value = num;
+    }
+
+    snprintf(buf, BUFSIZ, "%lu", value);
+
     return buf;
 }
 
@@ -27,7 +47,7 @@ char *gen_title(char *buf, const char *mem, int flags)
         snprintf(sz, sizeof(sz), "Gb");
     }
 
-    snprintf(buf, BUFDEC, "%s [%s]:", mem, sz);
+    snprintf(buf, BUFSIZ, "%s [%s]:", mem, sz);
 
     return buf;
 }

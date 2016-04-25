@@ -1,10 +1,11 @@
 #include <memwatch.h>
 #include <common.h>
 #include <draw.h>
+#include <mem_fields.h>
 
 static void print_bar(uint32_t col, uint32_t used, uint32_t last);
-static void print_info(const mem_t *mem);
-static void insert_value(mem_t *mem, char *line, int ch);
+static void print_info(const options_t *options);
+/*static void insert_value(mem_t *mem, char *line, int ch);*/
 
 void get_data(const options_t *options)
 {
@@ -12,11 +13,6 @@ void get_data(const options_t *options)
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    mem_t memory;
-
-    memset(&memory, 0, sizeof(memory));
-    memory.swap_disabled = 0;
-    memory.options = options;
 
     if ((fp = fopen(MEMFILE, "r")) == NULL)
     {
@@ -30,71 +26,100 @@ void get_data(const options_t *options)
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
-         if (strncmp(KEYMEMFREE, line, strlen(KEYMEMFREE)) == 0)
-         {
-              insert_value(&memory, line, FREE_MEM);
-         }
-         else if (strncmp(KEYMEMTOTAL, line, strlen(KEYMEMTOTAL)) == 0)
-         {
-              insert_value(&memory, line, TOTAL_MEM);
-         }
-         else if (strncmp(KEYBUFF, line, strlen(KEYBUFF)) == 0)
-         {
-              insert_value(&memory, line, BUFF_MEM);
-         }
-         else if (strncmp(KEYCACHED, line, strlen(KEYCACHED)) == 0)
-         {
-              insert_value(&memory, line, CACHE_MEM);
-         }
-         else if (strncmp(KEYSWFREE, line, strlen(KEYSWFREE)) == 0)
-         {
-              insert_value(&memory, line, FREE_SWAP);
-         }
-         else if (strncmp(KEYSWTOTAL, line, strlen(KEYSWTOTAL)) == 0)
-         {
-              insert_value(&memory, line, TOTAL_SWAP);
-         }
+        char *saveptr = NULL;
+        char *field, *value;
+        size_t last_ch;
+        mem_field_t *fieldp = NULL;
+
+        field = value = NULL;
+        field = strtok_r(line, ":", &saveptr);
+        fieldp = get_mem_field(field, strlen(field));
+
+        if (!fieldp)
+        {
+            continue;
+        }
+
+        value = strtok_r(NULL, " ", &saveptr);
+        last_ch = strlen(value) - 1;
+        if (value[last_ch] == '\n')
+        {
+            value[last_ch] = '\0';
+        }
+
+        fieldp->value = strtoul(value, NULL, 10);
     }
 
-    free(line);
+    if (line)
+    {
+        free(line);
+    }
     fclose(fp);
 
-    print_info(&memory);
+    print_info(options);
 }
 
-static void print_info(const mem_t *mem)
+static void print_info(const options_t *options)
 {
-    char buf[BUFDEC] = {0};
-    float mem_ratio = (float) mem->mem_used / mem->mem_total;
-    float mem_bar_used = BAR_LEHGTH * mem_ratio;
-    uint32_t mem_bar_free = BAR_LEHGTH - floor(mem_bar_used);
-    float swap_ratio = (float) mem->swap_used / mem->swap_total;
-    float swap_bar_used = BAR_LEHGTH * swap_ratio;
-    uint32_t swap_bar_free = BAR_LEHGTH - floor(swap_bar_used);
+    mem_field_t *mem_freep, *mem_totalp, *mem_cachp, *mem_slabp;
+    mem_field_t *mem_bufp;
+    char buf[BUFSIZ] = {0};
+    float mem_ratio, mem_bar_used, swap_ratio, swap_bar_used, swap_bar_free;
+    uint64_t mem_used, mem_free, mem_cached;
+    uint32_t mem_bar_free;
     size_t i;
-    uint16_t col = 1;
+    uint16_t col;
+
+    mem_used = mem_free = mem_cached = 0;
+    mem_freep = mem_totalp = mem_cachp = mem_slabp = NULL;
+    mem_bufp = NULL;
+
+    mem_freep  = get_mem_field(KEYMEMFREE,  sizeof(KEYMEMFREE) - 1);
+    mem_totalp = get_mem_field(KEYMEMTOTAL, sizeof(KEYMEMTOTAL) - 1);
+    mem_cachp  = get_mem_field(KEYCACHED,   sizeof(KEYCACHED) - 1);
+    mem_slabp  = get_mem_field(KEYSLAB,     sizeof(KEYSLAB) - 1);
+    mem_bufp   = get_mem_field(KEYBUFF,     sizeof(KEYBUFF) - 1);
+
+    if (mem_cachp && mem_slabp)
+    {
+        mem_cached = mem_cachp->value + mem_slabp->value;
+    }
+
+    if (mem_freep && mem_totalp && mem_bufp)
+    {
+        mem_used = mem_totalp->value - mem_freep->value -
+                   mem_cached - mem_bufp->value;
+    }
+
+    mem_ratio = (float) mem_used / mem_totalp->value;
+    mem_bar_used = BAR_LEHGTH * mem_ratio;
+    mem_bar_free = BAR_LEHGTH - floor(mem_bar_used);
+    /*swap_ratio = (float) mem->swap_used / mem->swap_total;
+    swap_bar_used = BAR_LEHGTH * swap_ratio;
+    swap_bar_free = BAR_LEHGTH - floor(swap_bar_used);*/
+    col = 1;
 
     for (i = 1; i <= 20; i++)
     {
          mvaddstr(i, 1, ALOTOFSPACES);
     }
 
-    mvaddstr(col, 1, gen_title(buf, _("Memory"), mem->options->flags));
+    mvaddstr(col, 1, gen_title(buf, _("Memory"), options->flags));
     col++; col++;
     print_bar(col, mem_bar_used, mem_bar_free);
     col++; col++;
     mvaddstr(col, 1, _("Total"));
-    mvaddstr(col++, 10, num_to_str(buf, mem->mem_total));
+    mvaddstr(col++, 10, num_to_str(buf, mem_totalp->value, options->flags));
     mvaddstr(col, 1, _("Free"));
-    mvaddstr(col++, 10, num_to_str(buf, mem->mem_free));
+    mvaddstr(col++, 10, num_to_str(buf, mem_freep->value, options->flags));
     mvaddstr(col, 1, _("Used"));
-    mvaddstr(col++, 10, num_to_str(buf, mem->mem_used));
+    mvaddstr(col++, 10, num_to_str(buf, mem_used, options->flags));
     mvaddstr(col, 1, _("Buff"));
-    mvaddstr(col++, 10, num_to_str(buf, mem->mem_buff));
+    mvaddstr(col++, 10, num_to_str(buf, mem_bufp->value, options->flags));
     mvaddstr(col, 1, _("Cache"));
-    mvaddstr(col++, 10, num_to_str(buf, mem->mem_cache));
+    mvaddstr(col++, 10, num_to_str(buf, mem_cached, options->flags));
 
-    if (mem->swap_disabled)
+    /*if (mem->swap_disabled)
     {
          col++; col++;
          mvaddstr(col, 1, _("Swap disabled."));
@@ -112,7 +137,7 @@ static void print_info(const mem_t *mem)
          mvaddstr(col++, 10, num_to_str(buf, mem->swap_free));
          mvaddstr(col, 1, _("Used"));
          mvaddstr(col, 10, num_to_str(buf, mem->swap_used));
-    }
+    }*/
 
     refresh();
 }
@@ -133,7 +158,7 @@ static void print_bar(uint32_t col, uint32_t used, uint32_t last)
     }
     mvaddch(col, row, ']');
 }
-
+#if 0
 static void insert_value(mem_t *mem, char *line, int ch)
 {
     char *token;
@@ -200,3 +225,4 @@ static void insert_value(mem_t *mem, char *line, int ch)
             break;
     }
 }
+#endif

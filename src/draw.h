@@ -3,12 +3,13 @@
 
 #define ALOTOFSPACES "                                        "
 
-#define KEYMEMFREE  "MemFree:"
-#define KEYMEMTOTAL "MemTotal:"
-#define KEYBUFF     "Buffers:"
-#define KEYCACHED   "Cached:"
-#define KEYSWFREE   "SwapFree:"
-#define KEYSWTOTAL  "SwapTotal:"
+#define KEYMEMFREE  "MemFree"
+#define KEYMEMTOTAL "MemTotal"
+#define KEYBUFF     "Buffers"
+#define KEYCACHED   "Cached"
+#define KEYSWFREE   "SwapFree"
+#define KEYSWTOTAL  "SwapTotal"
+#define KEYSLAB     "Slab"
 
 void get_data(const options_t *options);
 

@@ -15,7 +15,6 @@
 #include <sys/time.h>
 
 #define PACKAGENAME "memwatch"
-#define BUFDEC (sizeof(uint64_t) * 4)
 #define UNUSED __attribute__((unused))
 #define _(text) gettext(text)
 
@@ -53,16 +52,12 @@ typedef struct mem_s {
     uint64_t mem_buff, mem_cache;
     uint64_t swap_total, swap_free, swap_used;
     int swap_disabled;
-    const options_t* options;
 } mem_t;
 
-enum {
-    FREE_MEM,
-    TOTAL_MEM,
-    FREE_SWAP,
-    TOTAL_SWAP,
-    BUFF_MEM,
-    CACHE_MEM
-};
+typedef struct bar_s {
+    float mem_ratio, mem_bar_used, swap_ratio;
+    float swap_bar_used, swap_bar_free;
+    uint32_t mem_bar_free;
+} bar_t;
 
 #endif /* MEMWATCH_H_ */
