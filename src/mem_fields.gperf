@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 /* Command-line options:
-    -n -t -j 1 -L ANSI-C -N get_mem_field */
+   -m 10 -D -t -L ANSI-C -N get_mem_field */
 %}
 struct mem_field {
     char *name;
@@ -50,4 +50,3 @@ HugePages_Surp, 0
 Hugepagesize, 0
 DirectMap4k, 0
 DirectMap2M, 0
-%%
