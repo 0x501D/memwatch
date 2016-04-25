@@ -1,9 +1,8 @@
 %{
-#include <stdio.h>
-#include <string.h>
 #include <stdint.h>
+#include <string.h>
 /* Command-line options:
-    -n -t -j 1 -N get_mem_field */
+    -n -t -j 1 -L ANSI-C -N get_mem_field */
 %}
 struct mem_field {
     char *name;
@@ -52,16 +51,3 @@ Hugepagesize, 0
 DirectMap4k, 0
 DirectMap2M, 0
 %%
-#ifdef DEBUG
-int main(void)
-{
-    struct mem_field *p = get_mem_field("NFS_Unstable", strlen("NFS_Unstable"));
-    if (p)
-    {
-        p->value = 42;
-        printf("%lu\n", p->value);
-    }
-
-    return 0;
-}
-#endif /*DEBUG*/
