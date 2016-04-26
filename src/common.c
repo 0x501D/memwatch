@@ -61,3 +61,20 @@ void config_curses(void)
     cbreak();
     clear();
 }
+
+void print_bar(uint32_t col, uint32_t used, uint32_t last)
+{
+    size_t i, row;
+    row = 2;
+
+    mvaddch(col, row - 1, '[');
+    for (i = 0; i < used; i++, row++)
+    {
+         mvaddch(col, row, '#');
+    }
+    for (i = 0; i < last; i++, row++)
+    {
+         mvaddch(col, row, '-');
+    }
+    mvaddch(col, row, ']');
+}
