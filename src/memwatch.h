@@ -47,17 +47,4 @@ typedef struct options_s {
     int flags;
 } options_t;
 
-typedef struct mem_s {
-    uint64_t mem_total, mem_free, mem_used;
-    uint64_t mem_buff, mem_cache;
-    uint64_t swap_total, swap_free, swap_used;
-    int swap_disabled;
-} mem_t;
-
-typedef struct bar_s {
-    float mem_ratio, mem_bar_used, swap_ratio;
-    float swap_bar_used, swap_bar_free;
-    uint32_t mem_bar_free;
-} bar_t;
-
 #endif /* MEMWATCH_H_ */
