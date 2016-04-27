@@ -2,26 +2,20 @@
 
 char *num_to_str(char* buf, uint64_t num, int flags)
 {
-    uint64_t value = 0;
-
     if (flags & MEGABYTES_FL)
     {
-        value = num / 1024;
+        num /= 1024;
     }
     else if (flags & GIGABYTES_FL)
     {
-        value = num * 1024 * 1024;
+        num /= 1024 * 1024;
     }
     else if (flags & BYTES_FL)
     {
-        value = num * 1024;
-    }
-    else
-    {
-        value = num;
+        num *= 1024;
     }
 
-    snprintf(buf, BUFSIZ, "%lu", value);
+    snprintf(buf, BUFSIZ, "%lu", num);
 
     return buf;
 }
