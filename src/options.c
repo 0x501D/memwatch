@@ -21,8 +21,8 @@ void parse_options(int argc, char *const argv[], struct options *options)
         {
             case 'd':
                 options->delay = atoi(optarg);
-                if (options->delay >= DELAY_MIN &&
-                    options->delay <= DELAY_MAX)
+                if ((options->delay >= DELAY_MIN) &&
+                    (options->delay <= DELAY_MAX))
                 {
                     options->delay *= 1000;
                     options->flags |= DELAY_FL;
