@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-typedef struct mem_field_s {
+struct mem_field {
     char *name;
     uint64_t value;
-} mem_field_t;
+};
 
-mem_field_t *get_mem_field(const char *, unsigned int);
+struct mem_field *get_mem_field(const char *, unsigned int);
 
 #endif /* MEM_FIELDS_H_ */

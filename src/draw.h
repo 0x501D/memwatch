@@ -11,6 +11,6 @@
 #define KEYSWTOTAL  "SwapTotal"
 #define KEYSLAB     "Slab"
 
-void get_data(const options_t *options);
+void get_data(const struct options *options);
 
 #endif /* DRAW_H_ */

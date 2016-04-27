@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 {
     int ch, idle = 0, quit = 0;
     int32_t timer;
-    options_t options;
+    struct options options;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGENAME, LOCALEDIR);

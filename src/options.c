@@ -11,7 +11,7 @@ static void print_help(FILE *out)
     fputs(_(" -h: print help and exit\n"), out);
 }
 
-void parse_options(int argc, char *const argv[], options_t *options)
+void parse_options(int argc, char *const argv[], struct options *options)
 {
     int opt;
 
