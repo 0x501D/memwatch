@@ -105,15 +105,15 @@ static void print_info(const struct options *options)
     print_bar(col, mem_bar_used, mem_bar_free);
     col++; col++;
     mvaddstr(col, 1, _("Total"));
-    mvaddstr(col++, 10, num_to_str(buf, mem_totalp->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_totalp->value, options->flags));
     mvaddstr(col, 1, _("Free"));
-    mvaddstr(col++, 10, num_to_str(buf, mem_freep->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_freep->value, options->flags));
     mvaddstr(col, 1, _("Used"));
-    mvaddstr(col++, 10, num_to_str(buf, mem_used, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_used, options->flags));
     mvaddstr(col, 1, _("Buff"));
-    mvaddstr(col++, 10, num_to_str(buf, mem_bufp->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_bufp->value, options->flags));
     mvaddstr(col, 1, _("Cache"));
-    mvaddstr(col++, 10, num_to_str(buf, mem_cached, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_cached, options->flags));
 
     if (swap_totalp && !swap_totalp->value)
     {
@@ -138,11 +138,11 @@ static void print_info(const struct options *options)
         print_bar(col, swap_bar_used, swap_bar_free);
         col++; col++;
         mvaddstr(col, 1, _("Total"));
-        mvaddstr(col++, 10, num_to_str(buf, swap_totalp->value, options->flags));
+        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_totalp->value, options->flags));
         mvaddstr(col, 1, _("Free"));
-        mvaddstr(col++, 10, num_to_str(buf, swap_freep->value, options->flags));
+        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_freep->value, options->flags));
         mvaddstr(col, 1, _("Used"));
-        mvaddstr(col, 10, num_to_str(buf, swap_used, options->flags));
+        mvaddstr(col, 10, num_to_str(buf, sizeof(buf), swap_used, options->flags));
     }
 
     refresh();

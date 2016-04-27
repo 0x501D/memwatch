@@ -1,6 +1,6 @@
 #include <memwatch.h>
 
-char *num_to_str(char* buf, uint64_t num, int flags)
+char *num_to_str(char* buf, size_t len, uint64_t num, int flags)
 {
     if (flags & MEGABYTES_FL)
     {
@@ -15,7 +15,7 @@ char *num_to_str(char* buf, uint64_t num, int flags)
         num *= 1024;
     }
 
-    snprintf(buf, BUFSIZ, "%lu", num);
+    snprintf(buf, len, "%lu", num);
 
     return buf;
 }
