@@ -3,9 +3,9 @@
 #include <draw.h>
 #include <mem_fields.h>
 
-static void print_info(const struct options *options);
+static void print_info(const options_t *options);
 
-void get_data(const struct options *options)
+void get_data(const options_t *options)
 {
     FILE *fp;
     char *line = NULL;
@@ -27,7 +27,7 @@ void get_data(const struct options *options)
         char *saveptr = NULL;
         char *field, *value;
         size_t last_ch;
-        struct mem_field *fieldp = NULL;
+        mem_field_t *fieldp = NULL;
 
         field = value = NULL;
         field = strtok_r(line, ":", &saveptr);
@@ -57,10 +57,10 @@ void get_data(const struct options *options)
     print_info(options);
 }
 
-static void print_info(const struct options *options)
+static void print_info(const options_t *options)
 {
-    struct mem_field *mem_freep, *mem_totalp, *mem_cachp, *mem_slabp;
-    struct mem_field *mem_bufp, *swap_totalp, *swap_freep;
+    mem_field_t *mem_freep, *mem_totalp, *mem_cachp, *mem_slabp;
+    mem_field_t *mem_bufp, *swap_totalp, *swap_freep;
     char buf[BUFSIZ] = {0};
     float mem_ratio, mem_bar_used, swap_ratio, swap_bar_used, swap_bar_free;
     uint64_t mem_used, mem_free, mem_cached, swap_used;

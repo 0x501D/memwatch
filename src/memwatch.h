@@ -42,9 +42,9 @@ enum {
     BYTES_FL     = 1 << 4
 };
 
-struct options {
+typedef struct options_s {
     int32_t delay;
     int flags;
-};
+} options_t;
 
 #endif /* MEMWATCH_H_ */
