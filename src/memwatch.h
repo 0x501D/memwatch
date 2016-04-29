@@ -15,7 +15,6 @@
 #include <sys/time.h>
 
 #define PACKAGENAME "memwatch"
-#define UNUSED __attribute__((unused))
 #define _(text) gettext(text)
 
 #ifndef LOCALEDIR
