@@ -24,10 +24,11 @@
 
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
-#define DEFAULT_DELAY 1000
+#define DEFAULT_DELAY 1
 #define DEFAULT_DELIM 1024
-#define DELAY_MIN 100
-#define DELAY_MAX 100000
+#define DELAY_MULTIPLIER 1000000
+#define DELAY_MIN 0.1f
+#define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x1e
 
 #ifndef VERSION

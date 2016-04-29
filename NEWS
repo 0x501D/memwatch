@@ -2,6 +2,7 @@ v0.2.0 -
 --------------------
     - Add localization support (gettext)
     - Fix broken delay option
+    - Data update time is now set in seconds
 
 v0.1.0 - 16 Apr 2016
 --------------------

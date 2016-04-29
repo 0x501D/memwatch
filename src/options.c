@@ -14,22 +14,24 @@ static void print_help(FILE *out)
 void parse_options(int argc, char *const argv[], options_t *options)
 {
     int opt;
+    float delay = 0;
 
     while ((opt = getopt(argc, argv, "hvd:")) != -1)
     {
         switch (opt)
         {
             case 'd':
-                options->delay = atoi(optarg);
-                if ((options->delay >= DELAY_MIN) &&
-                    (options->delay <= DELAY_MAX))
+                delay = atof(optarg);
+                if ((delay >= DELAY_MIN) &&
+                    (delay <= DELAY_MAX))
                 {
-                    options->delay *= 1000;
+                    delay *= DELAY_MULTIPLIER;
+                    options->delay = delay;
                     options->flags |= DELAY_FL;
                 }
                 else
                 {
-                     fprintf(stderr, _("Supported delay range %d-%d\n"),
+                     fprintf(stderr, _("Supported delay range %.1f-%d\n"),
                              DELAY_MIN, DELAY_MAX);
                      exit(EXIT_FAILURE);
                 }
@@ -51,7 +53,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
 
     if (!(options->flags & DELAY_FL))
     {
-        options->delay = DEFAULT_DELAY * 1000;
+        options->delay = DEFAULT_DELAY * DELAY_MULTIPLIER;
     }
     options->flags |= MEGABYTES_FL;
 }

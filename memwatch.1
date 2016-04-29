@@ -1,5 +1,5 @@
 .\" Manpage for memwatch
-.TH MEMWATCH 1 "MAY 2015" Linux "User Manuals"
+.TH MEMWATCH 1 "APR 2016" Linux "User Manuals"
 .SH NAME
 memwatch \- Shows memory usage statistics in real time.
 .SH SYNOPSIS
@@ -11,8 +11,8 @@ This program reads /proc/meminfo and prints memory and swap statistics.
 \fB\-h\fR
 Prints help message.
 .TP
-\fB-d\fR \fImilliseconds\fR
-Set refresh timeout in milliseconds. Minimum value is 100(0.1s), maximum is 100000(100s).
+\fB-d\fR \fIseconds\fR
+Set data update time in seconds. Minimum value is 0.1, maximum is 100.
 .TP
 \fB\-v\fR
 Prints version.
