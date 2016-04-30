@@ -20,6 +20,12 @@ char *num_to_str(char* buf, size_t len, uint64_t num, const options_t *opt)
     {
         num *= opt->power;
     }
+    else if ((opt->flags & KILOBYTES_FL) &&
+             (opt->flags & ADV_POWER_FL))
+    {
+        /* 1000/1024 -> 0.9765625 */
+        num = fract_num / 0.9765625;
+    }
 
     if ((opt->flags & GIGABYTES_FL) ||
         (opt->flags & TERABYTES_FL))

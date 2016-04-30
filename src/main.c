@@ -37,10 +37,12 @@ int main(int argc, char **argv)
                 if (options.power == DEFAULT_POWER)
                 {
                     options.power = ADVANCED_POWER;
+                    options.flags |= ADV_POWER_FL;
                 }
                 else
                 {
                     options.power = DEFAULT_POWER;
+                    options.flags &= ~ADV_POWER_FL;
                 }
                 break;
             case 'k':
