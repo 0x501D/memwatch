@@ -1,21 +1,42 @@
 #include <memwatch.h>
 
-char *num_to_str(char* buf, size_t len, uint64_t num, int flags)
+char *num_to_str(char* buf, size_t len, uint64_t num, const options_t *opt)
 {
-    if (flags & MEGABYTES_FL)
+    float fract_num = num;
+
+    if (opt->flags & MEGABYTES_FL)
     {
-        num /= 1024;
+        num /= opt->power;
     }
-    else if (flags & GIGABYTES_FL)
+    else if (opt->flags & GIGABYTES_FL)
     {
-        num /= 1024 * 1024;
+        fract_num /= pow(opt->power, 2);
     }
-    else if (flags & BYTES_FL)
+    else if (opt->flags & TERABYTES_FL)
     {
-        num *= 1024;
+        fract_num /= pow(opt->power, 3);
+    }
+    else if (opt->flags & BYTES_FL)
+    {
+        num *= opt->power;
     }
 
-    snprintf(buf, len, "%lu", num);
+    if ((opt->flags & GIGABYTES_FL) ||
+        (opt->flags & TERABYTES_FL))
+    {
+        if (!fract_num)
+        {
+            snprintf(buf, len, "%.0f", fract_num);
+        }
+        else
+        {
+            snprintf(buf, len, "%.2f", fract_num);
+        }
+    }
+    else
+    {
+        snprintf(buf, len, "%lu", num);
+    }
 
     return buf;
 }
@@ -39,6 +60,10 @@ char *gen_title(char *buf, const char *mem, int flags)
     else if (flags & GIGABYTES_FL)
     {
         snprintf(sz, sizeof(sz), "Gb");
+    }
+    else if (flags & TERABYTES_FL)
+    {
+        snprintf(sz, sizeof(sz), "Tb");
     }
 
     snprintf(buf, BUFSIZ, "%s [%s]:", mem, sz);

@@ -33,6 +33,16 @@ int main(int argc, char **argv)
             case 'q':
                 quit = 1;
                 break;
+            case 'p':
+                if (options.power == DEFAULT_POWER)
+                {
+                    options.power = ADVANCED_POWER;
+                }
+                else
+                {
+                    options.power = DEFAULT_POWER;
+                }
+                break;
             case 'k':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= KILOBYTES_FL;
@@ -44,6 +54,14 @@ int main(int argc, char **argv)
             case 'b':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= BYTES_FL;
+                break;
+            case 'g':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= GIGABYTES_FL;
+                break;
+            case 't':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= TERABYTES_FL;
                 break;
         }
 

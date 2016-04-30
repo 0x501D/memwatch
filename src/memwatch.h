@@ -24,11 +24,12 @@
 #define MEMFILE "/proc/meminfo"
 #define BAR_LEHGTH 30
 #define DEFAULT_DELAY 1
-#define DEFAULT_DELIM 1024
+#define DEFAULT_POWER 1024
+#define ADVANCED_POWER 1000
 #define DELAY_MULTIPLIER 1000000
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
-#define CLEAR_SZ_FLAGS 0x1e
+#define CLEAR_SZ_FLAGS 0x3e
 
 #ifndef VERSION
 #define VERSION "0.2.0"
@@ -39,11 +40,14 @@ enum {
     MEGABYTES_FL = 1 << 1,
     GIGABYTES_FL = 1 << 2,
     KILOBYTES_FL = 1 << 3,
-    BYTES_FL     = 1 << 4
+    BYTES_FL     = 1 << 4,
+    TERABYTES_FL = 1 << 5,
+    ADV_POWER_FL = 1 << 6
 };
 
 typedef struct options_s {
     int32_t delay;
+    uint16_t power;
     int flags;
 } options_t;
 

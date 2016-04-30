@@ -106,17 +106,17 @@ static void print_info(const options_t *options)
     print_bar(col, mem_bar_used, mem_bar_free);
     col++; col++;
     mvaddstr(col, 1, _("Total"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_totalp->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_totalp->value, options));
     mvaddstr(col, 1, _("Free"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_freep->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_freep->value, options));
     mvaddstr(col, 1, _("Used"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_used, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_used, options));
     mvaddstr(col, 1, _("Buff"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_bufp->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_bufp->value, options));
     mvaddstr(col, 1, _("Cache"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_cached, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_cached, options));
     mvaddstr(col, 1, _("Avail"));
-    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_availp->value, options->flags));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_availp->value, options));
 
     if (swap_totalp && !swap_totalp->value)
     {
@@ -141,11 +141,11 @@ static void print_info(const options_t *options)
         print_bar(col, swap_bar_used, swap_bar_free);
         col++; col++;
         mvaddstr(col, 1, _("Total"));
-        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_totalp->value, options->flags));
+        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_totalp->value, options));
         mvaddstr(col, 1, _("Free"));
-        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_freep->value, options->flags));
+        mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), swap_freep->value, options));
         mvaddstr(col, 1, _("Used"));
-        mvaddstr(col, 10, num_to_str(buf, sizeof(buf), swap_used, options->flags));
+        mvaddstr(col, 10, num_to_str(buf, sizeof(buf), swap_used, options));
     }
 
     refresh();
