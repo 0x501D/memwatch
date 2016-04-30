@@ -10,6 +10,7 @@
 #define KEYSWFREE   "SwapFree"
 #define KEYSWTOTAL  "SwapTotal"
 #define KEYSLAB     "Slab"
+#define KEYMEMAVAIL "MemAvailable"
 
 void get_data(const options_t *options);
 

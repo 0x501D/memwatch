@@ -60,7 +60,7 @@ void get_data(const options_t *options)
 static void print_info(const options_t *options)
 {
     mem_field_t *mem_freep, *mem_totalp, *mem_cachp, *mem_slabp;
-    mem_field_t *mem_bufp, *swap_totalp, *swap_freep;
+    mem_field_t *mem_bufp, *mem_availp, *swap_totalp, *swap_freep;
     char buf[BUFSIZ] = {0};
     float mem_ratio, mem_bar_used, swap_ratio, swap_bar_used, swap_bar_free;
     uint64_t mem_used, mem_free, mem_cached, swap_used;
@@ -70,13 +70,14 @@ static void print_info(const options_t *options)
 
     mem_used = mem_free = mem_cached = swap_used = 0;
     mem_freep = mem_totalp = mem_cachp = mem_slabp = NULL;
-    mem_bufp = swap_totalp = swap_freep = NULL;
+    mem_availp = mem_bufp = swap_totalp = swap_freep = NULL;
 
     mem_freep    = get_mem_field(KEYMEMFREE,  sizeof(KEYMEMFREE) - 1);
     mem_totalp   = get_mem_field(KEYMEMTOTAL, sizeof(KEYMEMTOTAL) - 1);
     mem_cachp    = get_mem_field(KEYCACHED,   sizeof(KEYCACHED) - 1);
     mem_slabp    = get_mem_field(KEYSLAB,     sizeof(KEYSLAB) - 1);
     mem_bufp     = get_mem_field(KEYBUFF,     sizeof(KEYBUFF) - 1);
+    mem_availp   = get_mem_field(KEYMEMAVAIL, sizeof(KEYMEMAVAIL) - 1);
     swap_totalp  = get_mem_field(KEYSWTOTAL,  sizeof(KEYSWTOTAL) - 1);
 
     if (mem_cachp && mem_slabp)
@@ -114,6 +115,8 @@ static void print_info(const options_t *options)
     mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_bufp->value, options->flags));
     mvaddstr(col, 1, _("Cache"));
     mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_cached, options->flags));
+    mvaddstr(col, 1, _("Avail"));
+    mvaddstr(col++, 10, num_to_str(buf, sizeof(buf), mem_availp->value, options->flags));
 
     if (swap_totalp && !swap_totalp->value)
     {
