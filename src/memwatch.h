@@ -42,7 +42,8 @@ enum {
     KILOBYTES_FL = 1 << 3,
     BYTES_FL     = 1 << 4,
     TERABYTES_FL = 1 << 5,
-    ADV_POWER_FL = 1 << 6
+    ADV_POWER_FL = 1 << 6,
+    SIZE_OUT_FL  = 1 << 7
 };
 
 typedef struct options_s {
