@@ -3,19 +3,38 @@
 .SH NAME
 memwatch \- Shows memory usage statistics in real time.
 .SH SYNOPSIS
-memwatch [options]
+.B memwatch
+.RI [ options ]
 .SH DESCRIPTION
 This program reads /proc/meminfo and prints memory and swap statistics.
 .SH OPTIONS
 .TP
-\fB\-h\fR
-Prints help message.
+\fB-d\fR, \fB\-\-delay\fR \fIseconds\fR
+Set data update interval. Minimum value is 0.1, maximum is 100.
 .TP
-\fB-d\fR \fIseconds\fR
-Set data update time in seconds. Minimum value is 0.1, maximum is 100.
+\fB-p\fR, \fB\-\-power\fR
+Print sizes in powers of 1000 instead of 1024.
 .TP
-\fB\-v\fR
+\fB\-b\fR, \fB\-\-bytes\fR
+Display the amount of memory in bytes.
+.TP
+\fB\-k\fR, \fB\-\-kilo\fR
+Display the amount of memory in kilobytes.
+.TP
+\fB\-m\fR, \fB\-\-mega\fR
+Display the amount of memory in megabytes.
+.TP
+\fB\-g\fR, \fB\-\-giga\fR
+Display the amount of memory in gigabytes.
+.TP
+\fB\-t\fR, \fB\-\-tera\fR
+Display the amount of memory in terabytes.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
 Prints version.
+.TP
+\fB\-\-help\fR
+Prints help message.
 .SH INTERACTIVE COMMANDS
 .LP
 The following commands are supported while in memwatch:
@@ -32,5 +51,14 @@ Display the amount of memory in kilobytes.
 .TP
 .B m
 Display the amount of memory in megabytes.
+.TP
+.B g
+Display the amount of memory in gigabytes.
+.TP
+.B t
+Display the amount of memory in terabytes.
+.TP
+.B p
+Toggle power size (1000 or 1024).
 .SH AUTHOR
 Pavel Balaev (pascal@unixdev.ru)
