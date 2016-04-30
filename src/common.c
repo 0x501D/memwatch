@@ -18,7 +18,8 @@ char *num_to_str(char* buf, size_t len, uint64_t num, const options_t *opt)
     }
     else if (opt->flags & BYTES_FL)
     {
-        num *= opt->power;
+        /* In bytes we cannot use power of 1000 */
+        num *= DEFAULT_POWER;
     }
     else if ((opt->flags & KILOBYTES_FL) &&
              (opt->flags & ADV_POWER_FL))
