@@ -3,7 +3,10 @@ v0.2.0 -
     - Localization support (gettext).
     - Fix broken delay option.
     - Data update time is now set in seconds.
-    - New available memory field.
+    - New field displays available memory.
+    - Long options.
+    - Size in powers of 1024 and 1000
+    - Size in gigabytes and terabytes
 
 v0.1.0 - 16 Apr 2016
 --------------------
