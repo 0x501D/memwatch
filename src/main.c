@@ -65,6 +65,10 @@ int main(int argc, char **argv)
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= TERABYTES_FL;
                 break;
+            case 'h':
+                options.flags &= ~CLEAR_SZ_FLAGS;
+                options.flags |= HUMAN_RD_FL;
+                break;
         }
 
         if (timer > 0)

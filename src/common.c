@@ -39,6 +39,31 @@ char *num_to_str(char* buf, size_t len, uint64_t num, const options_t *opt)
             snprintf(buf, len, "%.2f", fract_num);
         }
     }
+    else if (opt->flags & HUMAN_RD_FL)
+    {
+        if (num < opt->power)
+        {
+            snprintf(buf, len, "%lu Kb", num);
+        }
+        else if (num < pow(opt->power, 2))
+        {
+            snprintf(buf, len, "%lu Mb", num / opt->power);
+        }
+        else if (num < pow(opt->power, 3))
+        {
+            fract_num /= pow(opt->power, 2);
+            snprintf(buf, len, "%.2f Gb", fract_num);
+        }
+        else if (num < pow(opt->power, 4))
+        {
+            fract_num /= pow(opt->power, 3);
+            snprintf(buf, len, "%.2f Tb", fract_num);
+        }
+        else
+        {
+            snprintf(buf, len, "test");
+        }
+    }
     else
     {
         snprintf(buf, len, "%lu", num);
@@ -70,6 +95,10 @@ char *gen_title(char *buf, const char *mem, int flags)
     else if (flags & TERABYTES_FL)
     {
         snprintf(sz, sizeof(sz), "Tb");
+    }
+    else if (flags & HUMAN_RD_FL)
+    {
+        snprintf(sz, sizeof(sz), "H");
     }
 
     snprintf(buf, BUFSIZ, "%s [%s]:", mem, sz);

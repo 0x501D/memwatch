@@ -13,11 +13,13 @@ static void print_help(FILE *out)
     fputs(_(" -p, --power:     use power of 1000 instead of 1024\n"), out);
     fputs(_(" -b, --bytes:     display the amount of memory in bytes\n"), out);
     fputs(_(" -k, --kilo:      display the amount of memory in kilobytes\n"), out);
-    fputs(_(" -m, --mega:      display the amount of memory in megabytes(default)\n"), out);
+    fputs(_(" -m, --mega:      display the amount of memory in megabytes\n"), out);
     fputs(_(" -g, --giga:      display the amount of memory in gigabytes\n"), out);
     fputs(_(" -t, --tera:      display the amount of memory in terabytes\n"), out);
+    fputs(_(" -h, --human:     display the amount of memory in human readable format(default)\n"), out);
     fputs(_(" -V, --version:   print version\n"), out);
     fputs(_("     --help:      print help and exit\n"), out);
+    fprintf(out, _("\nFor more details see %s(1).\n"), PACKAGENAME);
 }
 
 void parse_options(int argc, char *const argv[], options_t *options)
@@ -37,12 +39,13 @@ void parse_options(int argc, char *const argv[], options_t *options)
         { "mega",    no_argument,       NULL, 'm'         },
         { "giga",    no_argument,       NULL, 'g'         },
         { "tera",    no_argument,       NULL, 't'         },
+        { "human",   no_argument,       NULL, 'h'         },
         { "version", no_argument,       NULL, 'V'         },
         { "help",    no_argument,       NULL, HELP_OPTION },
         { NULL, 0, NULL, 0                                }
     };
 
-    while ((opt = getopt_long(argc, argv, "d:pbkmgtV", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "d:pbkmgthV", longopts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -88,6 +91,10 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 options->flags |= TERABYTES_FL | SIZE_OUT_FL;
                 break;
 
+            case 'h':
+                options->flags |= HUMAN_RD_FL | SIZE_OUT_FL;
+                break;
+
             case 'V':
                 printf("%s v%s\n", PACKAGENAME, VERSION);
                 exit(EXIT_SUCCESS);
@@ -112,6 +119,6 @@ void parse_options(int argc, char *const argv[], options_t *options)
     }
     if (!(options->flags & SIZE_OUT_FL))
     {
-        options->flags |= MEGABYTES_FL;
+        options->flags |= HUMAN_RD_FL;
     }
 }

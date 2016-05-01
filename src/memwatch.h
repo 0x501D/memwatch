@@ -30,7 +30,7 @@
 #define DELAY_MULTIPLIER 1000000
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
-#define CLEAR_SZ_FLAGS 0x3e
+#define CLEAR_SZ_FLAGS 0x7e
 
 #ifndef VERSION
 #define VERSION "0.2.0"
@@ -43,8 +43,9 @@ enum {
     KILOBYTES_FL = 1 << 3,
     BYTES_FL     = 1 << 4,
     TERABYTES_FL = 1 << 5,
-    ADV_POWER_FL = 1 << 6,
-    SIZE_OUT_FL  = 1 << 7
+    HUMAN_RD_FL  = 1 << 6,
+    ADV_POWER_FL = 1 << 7,
+    SIZE_OUT_FL  = 1 << 8
 };
 
 typedef struct options_s {
