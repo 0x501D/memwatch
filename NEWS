@@ -1,3 +1,9 @@
+v0.2.1 - 7 May 2016
+--------------------
+    - Fix bug with unit size options (bug #5).
+    - React to the hot key is pressed immediately.
+    - Man page was updated.
+
 v0.2.0 - 1 May 2016
 --------------------
     - Localization support (gettext).
