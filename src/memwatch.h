@@ -33,7 +33,7 @@
 #define CLEAR_SZ_FLAGS 0x7e
 
 #ifndef VERSION
-#define VERSION "0.2.0"
+#define VERSION "0.2.1"
 #endif
 
 enum {
