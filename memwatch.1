@@ -1,5 +1,5 @@
 .\" Manpage for memwatch
-.TH MEMWATCH 1 "APR 2016" Linux "User Manuals"
+.TH MEMWATCH 1 "MAY 2016" Linux "User Manuals"
 .SH NAME
 memwatch \- Shows memory usage statistics in real time.
 .SH SYNOPSIS
@@ -7,6 +7,37 @@ memwatch \- Shows memory usage statistics in real time.
 .RI [ options ]
 .SH DESCRIPTION
 This program reads /proc/meminfo and prints memory and swap statistics.
+.TP
+The displayed keys for physical ram (Memory [unit size]):
+.TP
+\fBTotal\fR
+Total usable ram.
+.TP
+\fBFree\fR
+Unused memory.
+.TP
+\fBUsed\fR
+Used memory (calculated as Total - Free - Buff - Cache).
+.TP
+\fBBuff\fR
+Memory used by kernel buffers.
+.TP
+\fBCache\fR
+Memory used by the page cache and slabs.
+.TP
+\fBAvail\fR
+An estimate of how much memory is available for starting new applications, without swapping.
+.TP
+The displayed keys for swap (Swap [unit size]):
+.TP
+\fBTotal\fR
+Total amount of swap space available.
+.TP
+\fBFree\fR
+Unused swap space.
+.TP
+\fBUsed\fR
+Used swap space.
 .SH OPTIONS
 .TP
 \fB-d\fR, \fB\-\-delay\fR \fIseconds\fR
