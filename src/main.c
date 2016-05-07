@@ -6,6 +6,7 @@
 int main(int argc, char **argv)
 {
     int ch, idle = 0, quit = 0;
+    int key_pressed = 0;
     int32_t timer;
     options_t options;
 
@@ -22,9 +23,10 @@ int main(int argc, char **argv)
 
     while (!quit)
     {
-        if (!idle)
+        if (!idle || key_pressed)
         {
             get_data(&options);
+            key_pressed = 0;
         }
 
         ch = getch();
@@ -44,30 +46,37 @@ int main(int argc, char **argv)
                     options.power = DEFAULT_POWER;
                     options.flags &= ~ADV_POWER_FL;
                 }
+                key_pressed = 1;
                 break;
             case 'k':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= KILOBYTES_FL;
+                key_pressed = 1;
                 break;
             case 'm':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= MEGABYTES_FL;
+                key_pressed = 1;
                 break;
             case 'b':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= BYTES_FL;
+                key_pressed = 1;
                 break;
             case 'g':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= GIGABYTES_FL;
+                key_pressed = 1;
                 break;
             case 't':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= TERABYTES_FL;
+                key_pressed = 1;
                 break;
             case 'h':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= HUMAN_RD_FL;
+                key_pressed = 1;
                 break;
         }
 
