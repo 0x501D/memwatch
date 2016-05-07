@@ -72,26 +72,32 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 break;
 
             case 'b':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= BYTES_FL | SIZE_OUT_FL;
                 break;
 
             case 'k':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= KILOBYTES_FL | SIZE_OUT_FL;
                 break;
 
             case 'm':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= MEGABYTES_FL | SIZE_OUT_FL;
                 break;
 
             case 'g':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= GIGABYTES_FL | SIZE_OUT_FL;
                 break;
 
             case 't':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= TERABYTES_FL | SIZE_OUT_FL;
                 break;
 
             case 'h':
+                options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= HUMAN_RD_FL | SIZE_OUT_FL;
                 break;
 
