@@ -45,7 +45,8 @@ enum {
     TERABYTES_FL = 1 << 5,
     HUMAN_RD_FL  = 1 << 6,
     SI_UNITS_FL  = 1 << 7,
-    SIZE_OUT_FL  = 1 << 8
+    SIZE_OUT_FL  = 1 << 8,
+    PROC_LIST_FL = 1 << 9
 };
 
 typedef struct options_s {

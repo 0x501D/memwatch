@@ -14,7 +14,9 @@ add_executable(memwatch
                options.c
                common.c
                draw.c
-               mem_fields.c)
+               mem_fields.c
+               memory_info.c
+               process_info.c)
 target_link_libraries(${PROJECT_NAME}
                     ${CURSES_LIBRARIES}
                     m)

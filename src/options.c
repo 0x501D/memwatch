@@ -17,6 +17,7 @@ static void print_help(FILE *out)
     fputs(_(" -g, --giga:      display the amount of memory in gigabytes\n"), out);
     fputs(_(" -t, --tera:      display the amount of memory in terabytes\n"), out);
     fputs(_(" -h, --human:     display the amount of memory in human readable format(default)\n"), out);
+    fputs(_(" -l, --list:      print memory usage per process\n"), out);
     fputs(_(" -V, --version:   print version\n"), out);
     fputs(_("     --help:      print help and exit\n"), out);
     fprintf(out, _("\nFor more details see %s(1).\n"), PACKAGENAME);
@@ -40,12 +41,13 @@ void parse_options(int argc, char *const argv[], options_t *options)
         { "giga",    no_argument,       NULL, 'g'         },
         { "tera",    no_argument,       NULL, 't'         },
         { "human",   no_argument,       NULL, 'h'         },
+        { "list",    no_argument,       NULL, 'l'         },
         { "version", no_argument,       NULL, 'V'         },
         { "help",    no_argument,       NULL, HELP_OPTION },
         { NULL, 0, NULL, 0                                }
     };
 
-    while ((opt = getopt_long(argc, argv, "d:SbkmgthV", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "d:SbkmgthlV", longopts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -99,6 +101,10 @@ void parse_options(int argc, char *const argv[], options_t *options)
             case 'h':
                 options->flags &= ~CLEAR_SZ_FLAGS;
                 options->flags |= HUMAN_RD_FL | SIZE_OUT_FL;
+                break;
+
+            case 'l':
+                options->flags |= PROC_LIST_FL;
                 break;
 
             case 'V':

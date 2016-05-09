@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     {
         if (!idle || key_pressed)
         {
-            get_data(&options);
+            print_info(&options);
             key_pressed = 0;
         }
 
@@ -35,6 +35,7 @@ int main(int argc, char **argv)
             case 'q':
                 quit = 1;
                 break;
+
             case 'S':
                 if (options.power == DEFAULT_POWER)
                 {
@@ -48,34 +49,52 @@ int main(int argc, char **argv)
                 }
                 key_pressed = 1;
                 break;
+
             case 'k':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= KILOBYTES_FL;
                 key_pressed = 1;
                 break;
+
             case 'm':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= MEGABYTES_FL;
                 key_pressed = 1;
                 break;
+
             case 'b':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= BYTES_FL;
                 key_pressed = 1;
                 break;
+
             case 'g':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= GIGABYTES_FL;
                 key_pressed = 1;
                 break;
+
             case 't':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= TERABYTES_FL;
                 key_pressed = 1;
                 break;
+
             case 'h':
                 options.flags &= ~CLEAR_SZ_FLAGS;
                 options.flags |= HUMAN_RD_FL;
+                key_pressed = 1;
+                break;
+
+            case 'l':
+                if (options.flags & PROC_LIST_FL)
+                {
+                    options.flags &= ~PROC_LIST_FL;
+                }
+                else
+                {
+                    options.flags |= PROC_LIST_FL;
+                }
                 key_pressed = 1;
                 break;
         }
