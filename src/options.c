@@ -10,7 +10,7 @@ static void print_help(FILE *out)
     fprintf(out, _("Usage:\n  %s [options]\n\n"), PACKAGENAME);
     fputs(_("Options:\n"), out);
     fputs(_(" -d N, --delay N: refresh timeout in N seconds\n"), out);
-    fputs(_(" -p, --power:     use power of 1000 instead of 1024\n"), out);
+    fputs(_(" -S, --si:        use power of 1000 instead of 1024\n"), out);
     fputs(_(" -b, --bytes:     display the amount of memory in bytes\n"), out);
     fputs(_(" -k, --kilo:      display the amount of memory in kilobytes\n"), out);
     fputs(_(" -m, --mega:      display the amount of memory in megabytes\n"), out);
@@ -33,7 +33,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
 
     static const struct option longopts[] = {
         { "delay",   required_argument, NULL, 'd'         },
-        { "power",   no_argument,       NULL, 'p'         },
+        { "si",      no_argument,       NULL, 'S'         },
         { "bytes",   no_argument,       NULL, 'b'         },
         { "kilo",    no_argument,       NULL, 'k'         },
         { "mega",    no_argument,       NULL, 'm'         },
@@ -45,7 +45,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
         { NULL, 0, NULL, 0                                }
     };
 
-    while ((opt = getopt_long(argc, argv, "d:pbkmgthV", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "d:SbkmgthV", longopts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -66,9 +66,9 @@ void parse_options(int argc, char *const argv[], options_t *options)
                 }
                 break;
 
-            case 'p':
-                options->power = ADVANCED_POWER;
-                options->flags |= ADV_POWER_FL;
+            case 'S':
+                options->power = SI_UNITS_POWER;
+                options->flags |= SI_UNITS_FL;
                 break;
 
             case 'b':
@@ -119,7 +119,7 @@ void parse_options(int argc, char *const argv[], options_t *options)
     {
         options->delay = DEFAULT_DELAY * DELAY_MULTIPLIER;
     }
-    if (!(options->flags & ADV_POWER_FL))
+    if (!(options->flags & SI_UNITS_FL))
     {
         options->power = DEFAULT_POWER;
     }

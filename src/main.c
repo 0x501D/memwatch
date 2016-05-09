@@ -35,16 +35,16 @@ int main(int argc, char **argv)
             case 'q':
                 quit = 1;
                 break;
-            case 'p':
+            case 'S':
                 if (options.power == DEFAULT_POWER)
                 {
-                    options.power = ADVANCED_POWER;
-                    options.flags |= ADV_POWER_FL;
+                    options.power = SI_UNITS_POWER;
+                    options.flags |= SI_UNITS_FL;
                 }
                 else
                 {
                     options.power = DEFAULT_POWER;
-                    options.flags &= ~ADV_POWER_FL;
+                    options.flags &= ~SI_UNITS_FL;
                 }
                 key_pressed = 1;
                 break;

@@ -25,8 +25,8 @@
 #define BAR_LEHGTH 30
 #define DEFAULT_DELAY 1
 #define DEFAULT_POWER 1024
-#define ADVANCED_POWER 1000
-#define ADV_POWER_DIV 0.9765625f
+#define SI_UNITS_POWER 1000
+#define SI_POWER_DIV 0.9765625f
 #define DELAY_MULTIPLIER 1000000
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
@@ -44,7 +44,7 @@ enum {
     BYTES_FL     = 1 << 4,
     TERABYTES_FL = 1 << 5,
     HUMAN_RD_FL  = 1 << 6,
-    ADV_POWER_FL = 1 << 7,
+    SI_UNITS_FL  = 1 << 7,
     SIZE_OUT_FL  = 1 << 8
 };
 
