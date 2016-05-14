@@ -1,5 +1,6 @@
 #include <memwatch.h>
 #include <memory_info.h>
+#include <common.h>
 
 #define ARR_NUM 40
 
@@ -8,16 +9,12 @@ static void print_items(uint32_t pos, list_navi_t *navi);
 void print_process_list(const options_t *options, list_navi_t *navi)
 {
     int i;
-
-    for (i = 1; i <= LINES; i++)
-    {
-         mvaddstr(i, 1, ALOTOFSPACES);
-    }
-
+    clear_screen();
     mvaddstr(1, 1, _("Process List:"));
     attron(A_REVERSE);
     mvprintw(3, 0, " %s%10s%10s%10s%15s", _("PID"), _("OWNER"),
              _("RSS"), _("SWAP"), _("Command"));
+
     for(i = 49; i < COLS; ++i)
     {
         mvaddch(3, i, ' ');

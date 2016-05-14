@@ -120,6 +120,19 @@ void config_curses(void)
     clear();
 }
 
+void clear_screen(void)
+{
+    int i, j;
+
+    for (i = 0; i <= LINES; i++)
+    {
+        for (j = 0; j <= COLS; j++)
+        {
+            mvaddch(i, j, ' ');
+        }
+    }
+}
+
 void print_bar(uint32_t col, uint32_t used, uint32_t last)
 {
     size_t i, row;

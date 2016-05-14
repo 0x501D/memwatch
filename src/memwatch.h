@@ -31,7 +31,6 @@
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
-#define ALOTOFSPACES "                                                                              "
 
 #ifndef VERSION
 #define VERSION "0.3.0alpha"

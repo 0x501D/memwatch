@@ -65,7 +65,6 @@ static void draw_memory_window(const options_t *options)
     float mem_ratio, mem_bar_used, swap_ratio, swap_bar_used, swap_bar_free;
     uint64_t mem_used, mem_free, mem_cached, swap_used;
     uint32_t mem_bar_free;
-    size_t i;
     uint16_t col;
 
     mem_used = mem_free = mem_cached = swap_used = 0;
@@ -96,10 +95,7 @@ static void draw_memory_window(const options_t *options)
     mem_bar_free = BAR_LEHGTH - floor(mem_bar_used);
     col = 1;
 
-    for (i = 1; i <= 20; i++)
-    {
-         mvaddstr(i, 1, ALOTOFSPACES);
-    }
+    clear_screen();
 
     mvaddstr(col, 1, gen_title(buf, _("Memory"), options->flags));
     col++; col++;
