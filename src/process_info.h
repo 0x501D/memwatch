@@ -3,6 +3,8 @@
 
 #define MAX_NAME_LEN 128
 
+#include <memwatch.h>
+
 void print_process_list(const options_t *options, list_navi_t *navi);
 
 typedef struct process_data_s {
