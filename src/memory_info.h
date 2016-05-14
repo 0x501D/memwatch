@@ -1,8 +1,6 @@
 #ifndef MEMORY_INFO_H_
 #define MEMORY_INFO_H_
 
-#define ALOTOFSPACES "                                        "
-
 #define KEYMEMFREE  "MemFree"
 #define KEYMEMTOTAL "MemTotal"
 #define KEYBUFF     "Buffers"

@@ -5,28 +5,33 @@
 
 int main(int argc, char **argv)
 {
-    int ch, idle = 0, quit = 0;
+    int idle = 0, quit = 0;
     int key_pressed = 0;
     int32_t timer;
     options_t options;
+    list_navi_t navi;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGENAME, LOCALEDIR);
     textdomain(PACKAGENAME);
 
     memset(&options, 0, sizeof(options));
+    memset(&navi, 0, sizeof(navi));
 
     parse_options(argc, argv, &options);
     config_curses();
 
     timer = options.delay;
+    navi.highlight = 1;
 
     while (!quit)
     {
+        wchar_t ch = 0;
         if (!idle || key_pressed)
         {
-            print_info(&options);
+            print_info(&options, &navi);
             key_pressed = 0;
+            options.flags &= ~REPRINT_FL;
         }
 
         ch = getch();
@@ -96,6 +101,39 @@ int main(int argc, char **argv)
                     options.flags |= PROC_LIST_FL;
                 }
                 key_pressed = 1;
+                break;
+
+            case KEY_UP:
+                if (navi.highlight == 1)
+                {
+                    if (navi.offset > 0)
+                    {
+                        navi.offset--;
+                    }
+                    else
+                    {
+                        navi.flags |= NAVI_GO_LAST_FL;
+                    }
+                }
+                else
+                {
+                    navi.highlight--;
+                }
+                key_pressed = 1;
+                options.flags |= REPRINT_FL;
+                break;
+
+            case KEY_DOWN:
+                if (navi.highlight == (uint32_t) LINES - 4)
+                {
+                    navi.offset++;
+                }
+                else
+                {
+                    navi.highlight++;
+                }
+                key_pressed = 1;
+                options.flags |= REPRINT_FL;
                 break;
         }
 

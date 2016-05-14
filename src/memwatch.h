@@ -31,9 +31,10 @@
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
+#define ALOTOFSPACES "                                                                              "
 
 #ifndef VERSION
-#define VERSION "0.2.1"
+#define VERSION "0.3.0alpha"
 #endif
 
 enum {
@@ -46,7 +47,12 @@ enum {
     HUMAN_RD_FL  = 1 << 6,
     SI_UNITS_FL  = 1 << 7,
     SIZE_OUT_FL  = 1 << 8,
-    PROC_LIST_FL = 1 << 9
+    PROC_LIST_FL = 1 << 9,
+    REPRINT_FL   = 1 << 10
+};
+
+enum {
+    NAVI_GO_LAST_FL     = 1
 };
 
 typedef struct options_s {
@@ -54,5 +60,11 @@ typedef struct options_s {
     uint16_t power;
     int flags;
 } options_t;
+
+typedef struct list_navi_s {
+    uint32_t highlight;
+    int32_t offset;
+    int flags;
+} list_navi_t;
 
 #endif /* MEMWATCH_H_ */
