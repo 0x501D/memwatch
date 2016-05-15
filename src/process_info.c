@@ -47,7 +47,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
 
 static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t *v)
 {
-    uint32_t num;
+    uint32_t count;
     uint32_t visible_items = LINES - 4;
     uint32_t index = 0;
     struct passwd *user_info = NULL;
@@ -94,21 +94,21 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
         }
     }
 
-    for (num = 1; index < v->size; index++, num++, pos++)
+    for (count = 1; index < v->size; index++, count++, pos++)
     {
         user_info = getpwuid(vector_at(v, index)->uid);
 
-        if (num == navi->highlight)
+        if (count == navi->highlight)
         {
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        mvprintw(pos, 0, "%5d  %s %s",
+        mvprintw(pos, 0, "%5d  %-11s %-15s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
                  vector_at(v, index)->name);
 
-        if (num == navi->highlight)
+        if (count == navi->highlight)
         {
             attroff(A_REVERSE | COLOR_PAIR(1));
         }
