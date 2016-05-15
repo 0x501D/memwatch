@@ -13,7 +13,6 @@ add_executable(memwatch
                main.c
                options.c
                common.c
-               draw.c
                mem_fields.c
                memory_info.c
                process_info.c

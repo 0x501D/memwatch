@@ -22,6 +22,8 @@
 #endif
 
 #define MEMFILE "/proc/meminfo"
+#define PROCDIR  "/proc"
+#define STATFILE "status"
 #define BAR_LEHGTH 30
 #define DEFAULT_DELAY 1
 #define DEFAULT_POWER 1024
@@ -31,6 +33,7 @@
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
+#define MAX_NAME_LEN 128
 
 #ifndef VERSION
 #define VERSION "0.3.0alpha"
@@ -62,8 +65,32 @@ typedef struct options_s {
 
 typedef struct list_navi_s {
     uint32_t highlight;
-    int32_t offset;
+    uint32_t offset;
     int flags;
 } list_navi_t;
+
+typedef struct process_data_s {
+    pid_t pid;
+    pid_t ppid;
+    uid_t uid;
+    gid_t guid;
+    char name[MAX_NAME_LEN + 1];
+    uint64_t vm_peak;
+    uint64_t vm_size;
+    uint64_t vm_hwv;
+    uint64_t vm_rss;
+    uint64_t vm_data;
+    uint64_t vm_stk;
+    uint64_t vm_exe;
+    uint64_t vm_lib;
+    uint64_t vm_swap;
+} process_data_t;
+
+typedef struct vector_process_s {
+    size_t size;
+    size_t total;
+    process_data_t *items;
+} vector_process_t;
+
 
 #endif /* MEMWATCH_H_ */

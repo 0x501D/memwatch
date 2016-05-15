@@ -1,7 +1,9 @@
 #include <memwatch.h>
 #include <options.h>
 #include <common.h>
-#include <draw.h>
+#include <vector.h>
+#include <process_info.h>
+#include <memory_info.h>
 
 int main(int argc, char **argv)
 {
@@ -10,6 +12,7 @@ int main(int argc, char **argv)
     int32_t timer;
     options_t options;
     list_navi_t navi;
+    vector_process_t v;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGENAME, LOCALEDIR);
@@ -17,6 +20,7 @@ int main(int argc, char **argv)
 
     memset(&options, 0, sizeof(options));
     memset(&navi, 0, sizeof(navi));
+    memset(&v, 0, sizeof(v));
 
     parse_options(argc, argv, &options);
     config_curses();
@@ -27,9 +31,18 @@ int main(int argc, char **argv)
     while (!quit)
     {
         wchar_t ch = 0;
+
         if (!idle || key_pressed)
         {
-            print_info(&options, &navi);
+            if (options.flags & PROC_LIST_FL)
+            {
+                print_process_list(&options, &navi, &v);
+            }
+            else
+            {
+                print_memory_info(&options);
+            }
+
             key_pressed = 0;
             options.flags &= ~REPRINT_FL;
         }
@@ -150,6 +163,7 @@ int main(int argc, char **argv)
     }
 
     endwin();
+    vector_free(&v);
 
     return 0;
 }

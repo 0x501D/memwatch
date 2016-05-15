@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <vector.h>
+#include <memwatch.h>
 
 int vector_init(vector_process_t *v, size_t nmemb)
 {
@@ -40,6 +40,12 @@ const process_data_t *vector_at(const vector_process_t *v, size_t nmemb)
     }
 
     return &v->items[nmemb];
+}
+
+void vector_clear(vector_process_t *v)
+{
+    memset(v->items, 0, v->size * sizeof(process_data_t));
+    v->size = 0;
 }
 
 void vector_free(vector_process_t *v)
