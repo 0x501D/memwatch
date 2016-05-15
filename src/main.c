@@ -152,8 +152,8 @@ int main(int argc, char **argv)
 
         if (timer > 0)
         {
-            timer -= 1000;
-            usleep(1000);
+            timer -= 10000;
+            usleep(10000);
             idle = 1;
             continue;
         }
