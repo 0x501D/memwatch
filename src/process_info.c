@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <dirent.h>
+#include <pwd.h>
 
 #include <memwatch.h>
 #include <memory_info.h>
@@ -31,9 +32,9 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     mvaddstr(1, 1, _("Process List:"));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
     attron(A_REVERSE);
-    mvprintw(3, 0, " %s%10s%10s%10s%15s", _("PID"), _("OWNER"),
+    mvprintw(3, 0, " %s%8s%10s%10s%15s", _("PID"), _("OWNER"),
              _("RSS"), _("SWAP"), _("Command"));
-    for(i = 49; i < COLS; ++i)
+    for(i = 47; i < COLS; ++i)
     {
         mvaddch(3, i, ' ');
     }
@@ -49,6 +50,7 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
     uint32_t num;
     uint32_t visible_items = LINES - 4;
     uint32_t index = 0;
+    struct passwd *user_info = NULL;
 
     /* up key pressed at the top of list, goto last element */
     if (navi->flags & NAVI_GO_LAST_FL)
@@ -94,15 +96,22 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
 
     for (num = 1; index < v->size; index++, num++, pos++)
     {
+        user_info = getpwuid(vector_at(v, index)->uid);
+
         if (num == navi->highlight)
         {
             attron(A_REVERSE | COLOR_PAIR(1));
-            mvprintw(pos, 0, "%s", vector_at(v, index)->name);
-            attroff(A_REVERSE | COLOR_PAIR(1));
-            continue;
         }
 
-        mvprintw(pos, 0, "%s", vector_at(v, index)->name);
+        mvprintw(pos, 0, "%5d  %s %s",
+                 vector_at(v, index)->pid,
+                 user_info ? user_info->pw_name : _("unknown"),
+                 vector_at(v, index)->name);
+
+        if (num == navi->highlight)
+        {
+            attroff(A_REVERSE | COLOR_PAIR(1));
+        }
     }
 }
 
@@ -202,7 +211,7 @@ static int get_process_stats(const char *path, process_data_t *item)
 
     if ((fp = fopen(path, "r")) == NULL)
     {
-        /* process dissapear */
+        /* process dissapear, ignore it */
         return 1;
     }
 
@@ -225,6 +234,14 @@ static int get_process_stats(const char *path, process_data_t *item)
         if (strncmp(field, STATUS_NAME, sizeof(STATUS_NAME)) == 0)
         {
             strncpy(item->name, value, MAX_NAME_LEN);
+        }
+        else if (strncmp(field, STATUS_PID, sizeof(STATUS_PID)) == 0)
+        {
+            item->pid = strtoul(value, NULL, 10);
+        }
+        else if (strncmp(field, STATUS_UID, sizeof(STATUS_UID)) == 0)
+        {
+            item->uid = strtoul(value, NULL, 10);
         }
     }
 
