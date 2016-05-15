@@ -3,6 +3,7 @@
 
 #include <memwatch.h>
 #include <memory_info.h>
+#include <process_info.h>
 #include <common.h>
 #include <vector.h>
 
@@ -10,6 +11,7 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
 static int dirname_only_digits(const char *name);
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
+static int get_process_stats(const char *path, process_data_t *item);
 
 void print_process_list(const options_t *options, list_navi_t *navi,
                         vector_process_t *v)
@@ -24,7 +26,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
         get_process_list(v);
     }
 
-    snprintf(total, sizeof(total), "%s%d]", _("[total: "), (int) v->size);
+    snprintf(total, sizeof(total), "[%s %d]", _("total:"), (int) v->size);
 
     mvaddstr(1, 1, _("Process List:"));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
@@ -95,12 +97,12 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
         if (num == navi->highlight)
         {
             attron(A_REVERSE | COLOR_PAIR(1));
-            mvprintw(pos, 0, " %s", vector_at(v, index)->name);
+            mvprintw(pos, 0, "%s", vector_at(v, index)->name);
             attroff(A_REVERSE | COLOR_PAIR(1));
             continue;
         }
 
-        mvprintw(pos, 0, " %s", vector_at(v, index)->name);
+        mvprintw(pos, 0, "%s", vector_at(v, index)->name);
     }
 }
 
@@ -128,9 +130,8 @@ static size_t get_process_count(void)
 
     if ((proc_dirp = opendir(PROCDIR)) == NULL)
     {
-        fprintf(stderr, "Error opening %s : %s\n", 
-                PROCDIR, strerror(errno));
-        exit(1);
+        err_exit("%s %s : %s", _("Error opening"),
+                 PROCDIR, strerror(errno));
     }
 
     while ((dir_info = readdir(proc_dirp)) != NULL)
@@ -151,12 +152,11 @@ static size_t get_process_count(void)
 static void get_process_list(vector_process_t *v)
 {
     DIR *proc_dirp;
-    size_t proc_count = 0;
     struct dirent *dir_info = NULL;
+    char status_file[PATH_MAX] = {0};
     process_data_t item;
 
-    /* vector was not initialized */
-    if (v->total == 0)
+    if (v->total == 0) /* vector was not initialized */
     {
         size_t nmemb = get_process_count();
         vector_init(v, nmemb * 2);
@@ -168,9 +168,8 @@ static void get_process_list(vector_process_t *v)
 
     if ((proc_dirp = opendir(PROCDIR)) == NULL)
     {
-        fprintf(stderr, "Error opening %s : %s\n", 
-                PROCDIR, strerror(errno));
-        exit(1);
+        err_exit("%s %s : %s", _("Error opening"),
+                 PROCDIR, strerror(errno));
     }
 
     while ((dir_info = readdir(proc_dirp)) != NULL)
@@ -181,11 +180,56 @@ static void get_process_list(vector_process_t *v)
         {
             continue;
         }
-        strncpy(item.name, dir_info->d_name, MAX_NAME_LEN);
-        vector_insert(v, &item);
 
-        proc_count++;
+        snprintf(status_file, sizeof(status_file), "%s/%s/%s",
+                 PROCDIR, dir_info->d_name, STATFILE);
+
+        if (get_process_stats(status_file, &item) == 0)
+        {
+            vector_insert(v, &item);
+        }
     }
 
     closedir(proc_dirp);
+}
+
+static int get_process_stats(const char *path, process_data_t *item)
+{
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    if ((fp = fopen(path, "r")) == NULL)
+    {
+        /* process dissapear */
+        return 1;
+    }
+
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        char *saveptr = NULL;
+        char *field, *value;
+        size_t last_ch;
+
+        field = value = NULL;
+        field = strtok_r(line, ":", &saveptr);
+        value = strtok_r(NULL, "\t", &saveptr);
+
+        last_ch = strlen(value) - 1;
+        if (value[last_ch] == '\n')
+        {
+            value[last_ch] = '\0';
+        }
+
+        if (strncmp(field, STATUS_NAME, sizeof(STATUS_NAME)) == 0)
+        {
+            strncpy(item->name, value, MAX_NAME_LEN);
+        }
+    }
+
+    free(line);
+    fclose(fp);
+
+    return 0;
 }
