@@ -7,5 +7,6 @@ void set_timer(uint32_t usec);
 void config_curses(void);
 void print_bar(uint32_t col, uint32_t used, uint32_t last);
 void clear_screen(void);
+void err_exit(const char *fmt, ...);
 
 #endif /* COMMON_H_ */

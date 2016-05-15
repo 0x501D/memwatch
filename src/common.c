@@ -149,3 +149,21 @@ void print_bar(uint32_t col, uint32_t used, uint32_t last)
     }
     mvaddch(col, row, ']');
 }
+
+void err_exit(const char *fmt, ...)
+{
+    va_list args;
+    WINDOW *win;
+
+    va_start(args, fmt);
+    va_end(args);
+
+    win = newwin(LINES, COLS, 1, 1);
+    vwprintw(win, fmt, args);
+    wrefresh(win);
+
+    wgetch(win);
+    delwin(win);
+    endwin();
+    exit(EXIT_FAILURE);
+}

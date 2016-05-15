@@ -14,12 +14,7 @@ void print_memory_info(const options_t *options)
 
     if ((fp = fopen(MEMFILE, "r")) == NULL)
     {
-         nocbreak();
-         mvaddstr(1, 1, _("Error opening file:"));
-         mvaddstr(2, 1, MEMFILE);
-         getch();
-         endwin();
-         exit(EXIT_FAILURE);
+         err_exit("%s %s", _("Error opening file:"), MEMFILE);
     }
 
     while ((read = getline(&line, &len, fp)) != -1)
