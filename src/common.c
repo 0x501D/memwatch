@@ -158,13 +158,14 @@ void err_exit(const char *fmt, ...)
     WINDOW *win;
 
     va_start(args, fmt);
-    va_end(args);
 
     win = newwin(LINES, COLS, 1, 1);
     vwprintw(win, fmt, args);
     wrefresh(win);
 
     wgetch(win);
+
+    va_end(args);
     delwin(win);
     endwin();
     exit(EXIT_FAILURE);
@@ -174,7 +175,7 @@ void grep_digits(char *dst, const char *src, size_t len)
 {
     size_t i;
 
-    for (i = 0; i < len && *src != '\0'; i++, src++)
+    for (i = 0; (i < len && *src != '\0'); i++, src++)
     {
         if (isdigit(*src))
         {
