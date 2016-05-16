@@ -32,9 +32,9 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     mvaddstr(1, 1, _("Process List:"));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
     attron(A_REVERSE);
-    mvprintw(3, 0, " %s%8s%10s%10s%15s", _("PID"), _("OWNER"),
-             _("RSS"), _("SWAP"), _("Command"));
-    for(i = 47; i < COLS; ++i)
+    mvprintw(3, 0, " %s%8s%10s%10s%10s%10s %s %15s", _("PID"), _("OWNER"),
+             _("RES"), _("SHR"), _("VIRT"), _("SWAP"), _("S"), _("Command"));
+    for(i = 70; i < COLS; ++i)
     {
         mvaddch(3, i, ' ');
     }
@@ -103,9 +103,11 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        mvprintw(pos, 0, "%5d  %-11s %-15s",
+        mvprintw(pos, 0, "%5d  %-11s %-10llu %c %-15s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
+                 vector_at(v, index)->vm_rss,
+                 vector_at(v, index)->state[0],
                  vector_at(v, index)->name);
 
         if (count == navi->highlight)
@@ -208,6 +210,8 @@ static int get_process_stats(const char *path, process_data_t *item)
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
+    char num_value[MAX_UINT64_LEN] = {0};
+    int user_process = 0;
 
     if ((fp = fopen(path, "r")) == NULL)
     {
@@ -243,10 +247,25 @@ static int get_process_stats(const char *path, process_data_t *item)
         {
             item->uid = strtoul(value, NULL, 10);
         }
+        else if (strncmp(field, STATUS_STATE, sizeof(STATUS_STATE)) == 0)
+        {
+            strncpy(item->state, value, MAX_STATUS_LEN);
+        }
+        else if (strncmp(field, STATUS_RSS, sizeof(STATUS_RSS)) == 0)
+        {
+            grep_digits(num_value, value, sizeof(num_value));
+            item->vm_rss = strtoul(num_value, NULL, 10);
+            user_process = 1;
+        }
     }
 
     free(line);
     fclose(fp);
+
+    if (!user_process) /* ignore kernel process */
+    {
+        return 1;
+    }
 
     return 0;
 }

@@ -33,7 +33,10 @@
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
+
 #define MAX_NAME_LEN 128
+#define MAX_STATUS_LEN 64
+#define MAX_UINT64_LEN 22
 
 #ifndef VERSION
 #define VERSION "0.3.0alpha"
@@ -84,6 +87,7 @@ typedef struct process_data_s {
     uint64_t vm_exe;
     uint64_t vm_lib;
     uint64_t vm_swap;
+    char state[MAX_STATUS_LEN + 1];
 } process_data_t;
 
 typedef struct vector_process_s {

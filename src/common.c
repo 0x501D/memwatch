@@ -1,3 +1,5 @@
+#include <ctype.h>
+
 #include <memwatch.h>
 
 char *num_to_str(char* buf, size_t len, uint64_t num, const options_t *opt)
@@ -166,4 +168,23 @@ void err_exit(const char *fmt, ...)
     delwin(win);
     endwin();
     exit(EXIT_FAILURE);
+}
+
+void grep_digits(char *dst, const char *src, size_t len)
+{
+    size_t i;
+
+    for (i = 0; i < len && *src != '\0'; i++, src++)
+    {
+        if (isdigit(*src))
+        {
+            *(dst++) = *src;
+        }
+        else
+        {
+            continue;
+        }
+    }
+
+    *dst = '\0';
 }
