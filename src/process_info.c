@@ -8,7 +8,9 @@
 #include <common.h>
 #include <vector.h>
 
-static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t *v);
+static void print_items(uint32_t pos, list_navi_t *navi,
+                        const vector_process_t *v,
+                        const options_t *options);
 static int dirname_only_digits(const char *name);
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
@@ -19,6 +21,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
 {
     int i;
     char total[BUFSIZ] = {0};
+    char buf[BUFSIZ] = {0};
 
     clear_screen();
 
@@ -29,7 +32,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
 
     snprintf(total, sizeof(total), "[%s %d]", _("total:"), (int) v->size);
 
-    mvaddstr(1, 1, _("Process List:"));
+    mvaddstr(1, 1, gen_title(buf, _("Process List"), options->flags));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
     attron(A_REVERSE);
     mvprintw(3, 0, " %s%8s%10s%10s%10s%10s %s %15s", _("PID"), _("OWNER"),
@@ -40,17 +43,20 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     }
     attroff(A_REVERSE);
 
-    print_items(4, navi, v);
+    print_items(4, navi, v, options);
 
     refresh();
 }
 
-static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t *v)
+static void print_items(uint32_t pos, list_navi_t *navi,
+                        const vector_process_t *v,
+                        const options_t *options)
 {
     uint32_t count;
     uint32_t visible_items = LINES - 4;
     uint32_t index = 0;
     struct passwd *user_info = NULL;
+    char num[MAX_UINT64_LEN + 1] = {0};
 
     /* up key pressed at the top of list, goto last element */
     if (navi->flags & NAVI_GO_LAST_FL)
@@ -103,10 +109,10 @@ static void print_items(uint32_t pos, list_navi_t *navi, const vector_process_t 
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        mvprintw(pos, 0, "%5d  %-11s %-10llu %c %-15s",
+        mvprintw(pos, 0, "%5d  %-11s %-10s %c %-15s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
-                 vector_at(v, index)->vm_rss,
+                 num_to_str(num, sizeof(num), vector_at(v, index)->vm_rss, options),
                  vector_at(v, index)->state[0],
                  vector_at(v, index)->name);
 
@@ -210,7 +216,7 @@ static int get_process_stats(const char *path, process_data_t *item)
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    char num_value[MAX_UINT64_LEN] = {0};
+    char num_value[MAX_UINT64_LEN + 1] = {0};
     int user_process = 0;
 
     if ((fp = fopen(path, "r")) == NULL)
