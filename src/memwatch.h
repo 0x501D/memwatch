@@ -87,6 +87,7 @@ typedef struct process_data_s {
     uint64_t vm_exe;
     uint64_t vm_lib;
     uint64_t vm_swap;
+    uint64_t vm_shr;
     char state[MAX_STATUS_LEN + 1];
 } process_data_t;
 
@@ -95,6 +96,5 @@ typedef struct vector_process_s {
     size_t total;
     process_data_t *items;
 } vector_process_t;
-
 
 #endif /* MEMWATCH_H_ */

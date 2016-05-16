@@ -185,3 +185,19 @@ void grep_digits(char *dst, const char *src, size_t len)
 
     *dst = '\0';
 }
+
+int dirname_only_digits(const char *name)
+{
+    int res = 1;
+
+    for (; *name != '\0'; name += sizeof(char))
+    {
+        if (!isdigit(*name))
+        {
+            res = 0;
+            break;
+        }
+    }
+
+    return res;
+}

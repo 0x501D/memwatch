@@ -11,7 +11,6 @@
 static void print_items(uint32_t pos, list_navi_t *navi,
                         const vector_process_t *v,
                         const options_t *options);
-static int dirname_only_digits(const char *name);
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
 static int get_process_stats(const char *path, process_data_t *item);
@@ -35,9 +34,9 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     mvaddstr(1, 1, gen_title(buf, _("Process List"), options->flags));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
     attron(A_REVERSE);
-    mvprintw(3, 0, " %s%8s%10s%10s%10s%10s %s %15s", _("PID"), _("OWNER"),
+    mvprintw(3, 0, " %s%8s%10s%10s%11s%10s%8s %s", _("PID"), _("OWNER"),
              _("RES"), _("SHR"), _("VIRT"), _("SWAP"), _("S"), _("Command"));
-    for(i = 70; i < COLS; ++i)
+    for(i = 69; i < COLS; ++i)
     {
         mvaddch(3, i, ' ');
     }
@@ -56,7 +55,10 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     uint32_t visible_items = LINES - 4;
     uint32_t index = 0;
     struct passwd *user_info = NULL;
-    char num[MAX_UINT64_LEN + 1] = {0};
+    char rss[MAX_UINT64_LEN + 1] = {0};
+    char shr[MAX_UINT64_LEN + 1] = {0};
+    char vir[MAX_UINT64_LEN + 1] = {0};
+    char swp[MAX_UINT64_LEN + 1] = {0};
 
     /* up key pressed at the top of list, goto last element */
     if (navi->flags & NAVI_GO_LAST_FL)
@@ -92,7 +94,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
         {
             navi->highlight = 1;
         }
-        /* this is dirty trick, try to fix it in future. */
+        /* TODO: this is dirty trick, try to fix it in future. */
         if (navi->offset > 0)
         {
             navi->highlight = 1;
@@ -109,10 +111,13 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        mvprintw(pos, 0, "%5d  %-11s %-10s %c %-15s",
+        mvprintw(pos, 0, "%5d  %-11s %-10s%-10s%-10s%-10s %c %-15s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
-                 num_to_str(num, sizeof(num), vector_at(v, index)->vm_rss, options),
+                 num_to_str(rss, sizeof(rss), vector_at(v, index)->vm_rss, options),
+                 num_to_str(shr, sizeof(shr), vector_at(v, index)->vm_shr, options),
+                 num_to_str(vir, sizeof(vir), vector_at(v, index)->vm_size, options),
+                 num_to_str(swp, sizeof(swp), vector_at(v, index)->vm_swap, options),
                  vector_at(v, index)->state[0],
                  vector_at(v, index)->name);
 
@@ -121,22 +126,6 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             attroff(A_REVERSE | COLOR_PAIR(1));
         }
     }
-}
-
-static int dirname_only_digits(const char *name)
-{
-    int res = 1;
-
-    for (; *name != '\0'; name += sizeof(char))
-    {
-        if (!isdigit(*name))
-        {
-            res = 0;
-            break;
-        }
-    }
-
-    return res;
 }
 
 static size_t get_process_count(void)
@@ -225,6 +214,7 @@ static int get_process_stats(const char *path, process_data_t *item)
         return 1;
     }
 
+    /* TODO: optimize this madness */
     while ((read = getline(&line, &len, fp)) != -1)
     {
         char *saveptr = NULL;
@@ -262,6 +252,21 @@ static int get_process_stats(const char *path, process_data_t *item)
             grep_digits(num_value, value, sizeof(num_value));
             item->vm_rss = strtoul(num_value, NULL, 10);
             user_process = 1;
+        }
+        else if (strncmp(field, STATUS_SHR, sizeof(STATUS_SHR)) == 0)
+        {
+            grep_digits(num_value, value, sizeof(num_value));
+            item->vm_shr = strtoul(num_value, NULL, 10);
+        }
+        else if (strncmp(field, STATUS_VIRT, sizeof(STATUS_VIRT)) == 0)
+        {
+            grep_digits(num_value, value, sizeof(num_value));
+            item->vm_size = strtoul(num_value, NULL, 10);
+        }
+        else if (strncmp(field, STATUS_SWAP, sizeof(STATUS_SWAP)) == 0)
+        {
+            grep_digits(num_value, value, sizeof(num_value));
+            item->vm_swap = strtoul(num_value, NULL, 10);
         }
     }
 
