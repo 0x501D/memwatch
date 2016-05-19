@@ -44,6 +44,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     }
     attroff(A_REVERSE);
 
+    vector_sort(v, options->flags);
     print_items(4, navi, v, options);
 
     refresh();

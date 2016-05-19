@@ -3,6 +3,15 @@
 
 #include <memwatch.h>
 
+static int compare(const void *n1, const void *n2, void *arg)
+{
+    int *flags = (int *) arg;    
+    process_data_t *p1 = (process_data_t *) n1; 
+    process_data_t *p2 = (process_data_t *) n2; 
+
+    return p2->vm_rss - p1->vm_rss;
+}
+
 int vector_init(vector_process_t *v, size_t nmemb)
 {
     v->size = 0;
@@ -40,6 +49,11 @@ const process_data_t *vector_at(const vector_process_t *v, size_t nmemb)
     }
 
     return &v->items[nmemb];
+}
+
+void vector_sort(vector_process_t *v, int flags)
+{
+    qsort_r(v->items, v->size, sizeof(process_data_t), compare, &flags);
 }
 
 void vector_clear(vector_process_t *v)
