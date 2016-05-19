@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <pwd.h>
+#include <libgen.h>
 
 #include <memwatch.h>
 #include <memory_info.h>
@@ -14,6 +15,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
 static int get_process_stats(const char *path, process_data_t *item);
+static uint64_t legacy_get_shmem(const char *path);
 
 void print_process_list(const options_t *options, list_navi_t *navi,
                         vector_process_t *v)
@@ -206,7 +208,7 @@ static int get_process_stats(const char *path, process_data_t *item)
     size_t len = 0;
     ssize_t read;
     char num_value[MAX_UINT64_LEN + 1] = {0};
-    int user_process = 0;
+    int user_process = 0, new_shmem = 0;
 
     if ((fp = fopen(path, "r")) == NULL)
     {
@@ -257,6 +259,10 @@ static int get_process_stats(const char *path, process_data_t *item)
         {
             grep_digits(num_value, value, sizeof(num_value));
             item->vm_shr = strtoul(num_value, NULL, 10);
+
+            /* keyword "RssFile" appeared in kernel >= 4.5
+             * for kernels < 4.5 we need to get value from /proc/PID/statm */
+            new_shmem = 1;
         }
         else if (strncmp(field, STATUS_VIRT, sizeof(STATUS_VIRT)) == 0)
         {
@@ -278,5 +284,53 @@ static int get_process_stats(const char *path, process_data_t *item)
         return 1;
     }
 
+    if (!new_shmem)
+    {
+        char status_path[PATH_MAX] = {0};
+        char statm_path[PATH_MAX] = {0};
+        strncpy(status_path, path, sizeof(status_path));
+        snprintf(statm_path, sizeof(statm_path), "%s/statm", dirname(status_path));
+        item->vm_shr = legacy_get_shmem(statm_path);
+    }
+
     return 0;
+}
+
+uint64_t legacy_get_shmem(const char *path)
+{
+    uint64_t res = 0;
+    char buf[256] = {0};
+    FILE *fp;
+
+    if ((fp = fopen(path, "r")) == NULL)
+    {
+        return res;
+    }
+
+    if (fgets(buf, sizeof(buf), fp) == NULL)
+    {
+        return res;
+    }
+
+    fclose(fp);
+
+    {
+        uint64_t page_size;
+        char *saveptr, *value;
+        int i;
+
+        page_size = sysconf(_SC_PAGESIZE);
+        value = saveptr = NULL;
+
+        value = strtok_r(buf, " ", &saveptr);
+        for (i = 0; i < 2; ++i)
+        {
+            value = strtok_r(NULL, " ", &saveptr);
+            if (value == NULL) return res;
+        }
+        res = strtoul(value, NULL, 10);
+        res = res * (page_size / DEFAULT_POWER);
+    }
+
+    return res;
 }
