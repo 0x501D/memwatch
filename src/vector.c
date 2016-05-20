@@ -10,6 +10,10 @@ static int compare(const void *n1, const void *n2, void *arg)
     process_data_t *p1 = (process_data_t *) n1; 
     process_data_t *p2 = (process_data_t *) n2; 
 
+    if (*(flags) & SORT_REV_FL)
+    {
+        return p1->vm_rss - p2->vm_rss;
+    }
     return p2->vm_rss - p1->vm_rss;
 }
 

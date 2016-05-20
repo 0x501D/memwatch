@@ -148,6 +148,16 @@ int main(int argc, char **argv)
                 key_pressed = 1;
                 options.flags |= REPRINT_FL;
                 break;
+
+            case '-':
+                key_pressed = 1;
+                options.flags |= SORT_REV_FL;
+                break;
+
+            case '+':
+                key_pressed = 1;
+                options.flags &= ~SORT_REV_FL;
+                break;
         }
 
         if (timer > 0)

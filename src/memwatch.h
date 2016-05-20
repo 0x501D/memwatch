@@ -53,7 +53,8 @@ enum {
     SI_UNITS_FL  = 1 << 7,
     SIZE_OUT_FL  = 1 << 8,
     PROC_LIST_FL = 1 << 9,
-    REPRINT_FL   = 1 << 10
+    REPRINT_FL   = 1 << 10,
+    SORT_REV_FL  = 1 << 11
 };
 
 enum {
