@@ -133,4 +133,6 @@ void parse_options(int argc, char *const argv[], options_t *options)
     {
         options->flags |= HUMAN_RD_FL;
     }
+    /* set default sort field */
+    options->flags |= SORT_RSS_FL;
 }

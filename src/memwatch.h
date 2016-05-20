@@ -33,6 +33,7 @@
 #define DELAY_MIN 0.1f
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
+#define CLEAR_SORT_FLAGS 0xf000
 
 #define MAX_NAME_LEN 128
 #define MAX_STATUS_LEN 64
@@ -54,7 +55,11 @@ enum {
     SIZE_OUT_FL  = 1 << 8,
     PROC_LIST_FL = 1 << 9,
     REPRINT_FL   = 1 << 10,
-    SORT_REV_FL  = 1 << 11
+    SORT_REV_FL  = 1 << 11,
+    SORT_RSS_FL  = 1 << 12,
+    SORT_SHM_FL  = 1 << 13,
+    SORT_VIR_FL  = 1 << 14,
+    SORT_SWP_FL  = 1 << 15
 };
 
 enum {

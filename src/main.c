@@ -149,14 +149,40 @@ int main(int argc, char **argv)
                 options.flags |= REPRINT_FL;
                 break;
 
-            case '-':
+            case 'R':
+                if (options.flags & SORT_REV_FL)
+                {
+                    options.flags &= ~SORT_REV_FL;
+                }
+                else
+                {
+                    options.flags |= SORT_REV_FL;
+                }
                 key_pressed = 1;
-                options.flags |= SORT_REV_FL;
                 break;
 
-            case '+':
+            case '1':
+                options.flags &= ~CLEAR_SORT_FLAGS;
+                options.flags |= SORT_RSS_FL;
                 key_pressed = 1;
-                options.flags &= ~SORT_REV_FL;
+                break;
+
+            case '2':
+                options.flags &= ~CLEAR_SORT_FLAGS;
+                options.flags |= SORT_SHM_FL;
+                key_pressed = 1;
+                break;
+
+            case '3':
+                options.flags &= ~CLEAR_SORT_FLAGS;
+                options.flags |= SORT_VIR_FL;
+                key_pressed = 1;
+                break;
+
+            case '4':
+                options.flags &= ~CLEAR_SORT_FLAGS;
+                options.flags |= SORT_SWP_FL;
+                key_pressed = 1;
                 break;
         }
 

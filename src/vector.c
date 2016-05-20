@@ -9,12 +9,34 @@ static int compare(const void *n1, const void *n2, void *arg)
     int *flags = (int *) arg;    
     process_data_t *p1 = (process_data_t *) n1; 
     process_data_t *p2 = (process_data_t *) n2; 
+    uint64_t val1, val2;
+
+    if (*(flags) & SORT_RSS_FL)
+    {
+        val1 = p1->vm_rss;
+        val2 = p2->vm_rss;
+    }
+    else if (*(flags) & SORT_SHM_FL)
+    {
+        val1 = p1->vm_shr;
+        val2 = p2->vm_shr;
+    }
+    else if (*(flags) & SORT_VIR_FL)
+    {
+        val1 = p1->vm_size;
+        val2 = p2->vm_size;
+    }
+    else if (*(flags) & SORT_SWP_FL)
+    {
+        val1 = p1->vm_swap;
+        val2 = p2->vm_swap;
+    }
 
     if (*(flags) & SORT_REV_FL)
     {
-        return p1->vm_rss - p2->vm_rss;
+        return val1 - val2;
     }
-    return p2->vm_rss - p1->vm_rss;
+    return val2 - val1;
 }
 
 int vector_init(vector_process_t *v, size_t nmemb)
