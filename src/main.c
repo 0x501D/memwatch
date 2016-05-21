@@ -54,7 +54,12 @@ int main(int argc, char **argv)
                 quit = 1;
                 break;
 
-            case 'S':
+            case KEY_F(1):
+                print_hotkeys_help();
+                key_pressed = 1;
+                break;
+
+            case 's':
                 if (options.power == DEFAULT_POWER)
                 {
                     options.power = SI_UNITS_POWER;
@@ -149,7 +154,7 @@ int main(int argc, char **argv)
                 options.flags |= REPRINT_FL;
                 break;
 
-            case 'R':
+            case 'r':
                 if (options.flags & SORT_REV_FL)
                 {
                     options.flags &= ~SORT_REV_FL;
