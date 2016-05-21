@@ -21,7 +21,6 @@ static void get_process_cmdline(char *cmdline, pid_t pid);
 void print_process_list(const options_t *options, list_navi_t *navi,
                         vector_process_t *v)
 {
-    int i;
     char total[BUFSIZ] = {0};
     char buf[BUFSIZ] = {0};
 
@@ -37,12 +36,9 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     mvaddstr(1, 1, gen_title(buf, _("Process List"), options->flags));
     mvaddstr(1, COLS - (strlen(total) + 1), total);
     attron(A_REVERSE);
-    mvprintw(3, 0, " %s%8s%10s%10s%11s%10s%8s %s", _("PID"), _("OWNER"),
+    mvprintw(3, 0, " %s%8s%10s%12s%13s%12s%10s %s", _("PID"), _("OWNER"),
              _("RES"), _("SHR"), _("VIRT"), _("SWAP"), _("S"), _("Command"));
-    for(i = 69; i < COLS; ++i)
-    {
-        mvaddch(3, i, ' ');
-    }
+    mvhline(3, 77, ' ', COLS);
     attroff(A_REVERSE);
 
     vector_sort(v, options->flags);
@@ -118,7 +114,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
 
         get_process_cmdline(cmdline, vector_at(v, index)->pid);
 
-        mvprintw(pos, 0, "%5d  %-11s %-10s%-10s%-10s%-10s %c %s",
+        mvprintw(pos, 0, "%5d  %-11s %-12s%-12s%-12s%-12s %c %s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
                  num_to_str(rss, sizeof(rss), vector_at(v, index)->vm_rss, options),
@@ -360,7 +356,7 @@ static void get_process_cmdline(char *cmdline, pid_t pid)
 
     {
         uint32_t i;
-        uint32_t cmd_len = COLS - 59; /* get rid of this magic number in future */
+        uint32_t cmd_len = COLS - 70; /* get rid of this magic number in future */
         for (i = 0; (i < cmd_len && i != MAX_CMDLINE); i++)
         {
             if (buf[i] == '\0')
@@ -368,10 +364,6 @@ static void get_process_cmdline(char *cmdline, pid_t pid)
                 buf[i] = ' ';
             }
             cmdline[i] = buf[i];
-        }
-        for (; i < cmd_len; i++)
-        {
-            cmdline[i] = '*';
         }
         cmdline[i] = '\0';
     }

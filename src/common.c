@@ -124,14 +124,11 @@ void config_curses(void)
 
 void clear_screen(void)
 {
-    int i, j;
+    int i;
 
     for (i = 0; i <= LINES; i++)
     {
-        for (j = 0; j <= COLS; j++)
-        {
-            mvaddch(i, j, ' ');
-        }
+        mvhline(i, 0, ' ', COLS);
     }
 }
 

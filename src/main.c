@@ -198,6 +198,8 @@ int main(int argc, char **argv)
         idle = 0;
     }
 
+    mvhline(LINES - 1, 0, ' ', COLS);
+    refresh();
     endwin();
     vector_free(&v);
 
