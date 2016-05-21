@@ -16,6 +16,7 @@ static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
 static int get_process_stats(const char *path, process_data_t *item);
 static uint64_t legacy_get_shmem(const char *path);
+static void get_process_cmdline(char *cmdline, pid_t pid);
 
 void print_process_list(const options_t *options, list_navi_t *navi,
                         vector_process_t *v)
@@ -58,10 +59,11 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     uint32_t visible_items = LINES - 4;
     uint32_t index = 0;
     struct passwd *user_info = NULL;
-    char rss[MAX_UINT64_LEN + 1] = {0};
-    char shr[MAX_UINT64_LEN + 1] = {0};
-    char vir[MAX_UINT64_LEN + 1] = {0};
-    char swp[MAX_UINT64_LEN + 1] = {0};
+    char rss[MAX_UINT64_LEN +1 ] = {0};
+    char shr[MAX_UINT64_LEN +1 ] = {0};
+    char vir[MAX_UINT64_LEN +1 ] = {0};
+    char swp[MAX_UINT64_LEN +1 ] = {0};
+    char cmdline[MAX_CMDLINE + 1] = {0};
 
     /* up key pressed at the top of list, goto last element */
     if (navi->flags & NAVI_GO_LAST_FL)
@@ -114,7 +116,9 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        mvprintw(pos, 0, "%5d  %-11s %-10s%-10s%-10s%-10s %c %-15s",
+        get_process_cmdline(cmdline, vector_at(v, index)->pid);
+
+        mvprintw(pos, 0, "%5d  %-11s %-10s%-10s%-10s%-10s %c %s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
                  num_to_str(rss, sizeof(rss), vector_at(v, index)->vm_rss, options),
@@ -122,7 +126,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
                  num_to_str(vir, sizeof(vir), vector_at(v, index)->vm_size, options),
                  num_to_str(swp, sizeof(swp), vector_at(v, index)->vm_swap, options),
                  vector_at(v, index)->state[0],
-                 vector_at(v, index)->name);
+                 cmdline);
 
         if (count == navi->highlight)
         {
@@ -234,11 +238,7 @@ static int get_process_stats(const char *path, process_data_t *item)
             value[last_ch] = '\0';
         }
 
-        if (strncmp(field, STATUS_NAME, sizeof(STATUS_NAME)) == 0)
-        {
-            strncpy(item->name, value, MAX_NAME_LEN);
-        }
-        else if (strncmp(field, STATUS_PID, sizeof(STATUS_PID)) == 0)
+        if (strncmp(field, STATUS_PID, sizeof(STATUS_PID)) == 0)
         {
             item->pid = strtoul(value, NULL, 10);
         }
@@ -310,6 +310,7 @@ uint64_t legacy_get_shmem(const char *path)
 
     if (fgets(buf, sizeof(buf), fp) == NULL)
     {
+        fclose(fp);
         return res;
     }
 
@@ -334,4 +335,46 @@ uint64_t legacy_get_shmem(const char *path)
     }
 
     return res;
+}
+
+static void get_process_cmdline(char *cmdline, pid_t pid)
+{
+    char path[PATH_MAX] = {0};
+    char buf[MAX_CMDLINE+1] = {0};
+    FILE *fp;
+
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", pid);
+
+    if ((fp = fopen(path, "r")) == NULL)
+    {
+        strncpy(cmdline, _("unknown"), MAX_CMDLINE);
+        return;
+    }
+
+    if (fgets(buf, sizeof(buf) - 1, fp) == NULL)
+    {
+        strncpy(cmdline, _("unknown"), MAX_CMDLINE);
+        fclose(fp);
+        return;
+    }
+
+    {
+        uint32_t i;
+        uint32_t cmd_len = COLS - 59; /* get rid of this magic number in future */
+        for (i = 0; (i < cmd_len && i != MAX_CMDLINE); i++)
+        {
+            if (buf[i] == '\0')
+            {
+                buf[i] = ' ';
+            }
+            cmdline[i] = buf[i];
+        }
+        for (; i < cmd_len; i++)
+        {
+            cmdline[i] = '*';
+        }
+        cmdline[i] = '\0';
+    }
+
+    fclose(fp);
 }

@@ -34,6 +34,7 @@
 #define DELAY_MAX 60
 #define CLEAR_SZ_FLAGS 0x7e
 #define CLEAR_SORT_FLAGS 0xf000
+#define MAX_CMDLINE 4096
 
 #define MAX_NAME_LEN 128
 #define MAX_STATUS_LEN 64
@@ -83,7 +84,6 @@ typedef struct process_data_s {
     pid_t ppid;
     uid_t uid;
     gid_t guid;
-    char name[MAX_NAME_LEN + 1];
     uint64_t vm_peak;
     uint64_t vm_size;
     uint64_t vm_hwv;
