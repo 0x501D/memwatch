@@ -205,23 +205,23 @@ void print_hotkeys_help(void)
 
     win = newwin(LINES, COLS, 0, 0);
     mvwaddstr(win, 1, 1, _("Global hotkeys:"));
-    mvwprintw(win, 3, 1, "%-11s %s", _("q:"),
-              _("Exit memwatch."));
-    mvwprintw(win, 4, 1, "%-11s %s", _("b,k,m,g,t:"),
+    mvwprintw(win, 3, 1, "%-11s %s", _("b,k,m,g,t:"),
               _("unit size: bytes, kilobytes, megabytes, gigabytes and terabytes."));
-    mvwprintw(win, 5, 1, "%-11s %s", _("h:"),
+    mvwprintw(win, 4, 1, "%-11s %s", _("h:"),
               _("display the amount of memory in human readable format."));
-    mvwprintw(win, 6, 1, "%-11s %s", _("s:"),
+    mvwprintw(win, 5, 1, "%-11s %s", _("s:"),
               _("print sizes in powers of 1000 instead of 1024."));
-    mvwprintw(win, 7, 1, "%-11s %s", _("l:"),
+    mvwprintw(win, 6, 1, "%-11s %s", _("l:"),
               _("switch between the main window and a list of processes."));
+    mvwprintw(win, 7, 1, "%-11s %s", _("q:"),
+              _("Exit memwatch."));
     mvwaddstr(win, 9, 1, _("Process list hotkeys:"));
     mvwprintw(win, 11, 1, "%-11s %s", _("arrows:"),
               _("scroll process list"));
     mvwprintw(win, 12, 1, "%-11s %s", _("1,2,3,4:"),
               _("sort by field: 1 -> RSS, 2 -> SHR, 3 -> VIRT, 4 -> SWAP"));
     mvwprintw(win, 13, 1, "%-11s %s", _("r:"),
-              _("switch the sort order"));
+              _("switch the sort order."));
     mvwaddstr(win, 18, 1, _("Press any key to leave help."));
     mvwprintw(win, 20, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
 
