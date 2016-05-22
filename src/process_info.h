@@ -12,10 +12,16 @@
 #define STATUS_SHR   "RssFile"
 #define STATUS_VIRT  "VmSize"
 #define STATUS_STATE "State"
+#define STATUS_VPEAK "VmPeak"
+#define STATUS_DATA  "VmData"
+#define STATUS_STK   "VmStk"
+#define STATUS_EXE   "VmExe"
+#define STATUS_LIB   "VmLib"
+#define STATUS_RPEAK "VmHWM"
 
 void print_process_list(const options_t *options,
                         list_navi_t *navi, vector_process_t *v);
-void print_single_process(options_t *options,
-                          list_navi_t *navi, vector_process_t *v);
+void print_single_process(options_t *options, list_navi_t *navi,
+                          vector_process_t *v, process_data_t *ps);
 
 #endif /* PROCESS_INFO_H_ */

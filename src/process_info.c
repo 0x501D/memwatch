@@ -12,7 +12,7 @@
 static void print_items(uint32_t pos, list_navi_t *navi,
                         const vector_process_t *v,
                         const options_t *options);
-static void print_item(const process_data_t *ps);
+static void print_item(const process_data_t *ps, const options_t *options);
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
 static int get_process_stats(const char *path, process_data_t *item, uint8_t full);
@@ -48,11 +48,12 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     refresh();
 }
 
-void print_single_process(options_t *options, list_navi_t *navi,
-                          vector_process_t *v)
+void print_single_process(options_t *options, list_navi_t *navi, 
+                          vector_process_t *v, process_data_t *ps)
 {
     clear_screen();
 
+    /* We need to get pid for selected process */
     if (!navi->fixed_ps)
     {
         size_t index = (navi->highlight + navi->offset) - 1;
@@ -60,33 +61,51 @@ void print_single_process(options_t *options, list_navi_t *navi,
         get_process_list(v);
         vector_sort(v, options->flags);
         ps = vector_at(v, index);
-        print_item(ps);
+        if (!ps)
+        {
+            goto out;
+        }
+        print_item(ps, options);
         navi->fixed_ps = (vector_at(v, index))->pid;
         return;
     }
+
+    /* We have pid, no need to use vector */
     {
-        process_data_t ps;
         char path[PATH_MAX + 1] = {0};
 
-        memset(&ps, 0, sizeof(ps));
         snprintf(path, sizeof(path), "%s/%d/status", PROCDIR, navi->fixed_ps);
-        if (get_process_stats(path, &ps, 1) == 0)
+        if (!(options->flags & REPRINT_FL))
         {
-            print_item(&ps);
+            if (get_process_stats(path, ps, 1) == 0)
+            {
+                print_item(ps, options);
+                return;
+            }
+            else
+            {
+                goto out;
+            }
         }
-        else
-        {
-            options->flags &= ~SINGLE_PS_FL;
-            options->flags |= PROC_LIST_FL;
-            navi->fixed_ps = 0;
-            navi->flags |= NAVI_FIXED_PS_EXITED;
-        }
+
+        print_item(ps, options);
+        return;
     }
+
+out:
+    options->flags &= ~SINGLE_PS_FL;
+    options->flags |= PROC_LIST_FL;
+    navi->fixed_ps = 0;
+    navi->flags |= NAVI_FIXED_PS_EXITED;
 }
 
-static void print_item(const process_data_t *ps)
+static void print_item(const process_data_t *ps, const options_t *options)
 {
-    mvprintw(1, 1, "%d %s", ps->pid, ps->state);
+    char buf[BUFSIZ] = {0};
+
+    mvaddstr(1, 1, gen_title(buf, _("Process Information"), options->flags));
+    mvprintw(3, 1, "%s: %s", _("State"), ps->state);
+    mvprintw(4, 1, "%s: %d", _("Pid"), ps->pid);
 }
 
 static void print_items(uint32_t pos, list_navi_t *navi,
@@ -313,6 +332,39 @@ static int get_process_stats(const char *path, process_data_t *item, uint8_t ful
             grep_digits(num_value, value, sizeof(num_value));
             item->vm_swap = strtoul(num_value, NULL, 10);
         }
+        if (full)
+        {
+            if (strncmp(field, STATUS_VPEAK, sizeof(STATUS_VPEAK)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_peak = strtoul(num_value, NULL, 10);
+            }
+            else if (strncmp(field, STATUS_RPEAK, sizeof(STATUS_RPEAK)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_hwv = strtoul(num_value, NULL, 10);
+            }
+            else if (strncmp(field, STATUS_DATA, sizeof(STATUS_DATA)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_data = strtoul(num_value, NULL, 10);
+            }
+            else if (strncmp(field, STATUS_STK, sizeof(STATUS_STK)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_stk = strtoul(num_value, NULL, 10);
+            }
+            else if (strncmp(field, STATUS_EXE, sizeof(STATUS_EXE)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_exe = strtoul(num_value, NULL, 10);
+            }
+            else if (strncmp(field, STATUS_LIB, sizeof(STATUS_LIB)) == 0)
+            {
+                grep_digits(num_value, value, sizeof(num_value));
+                item->vm_lib = strtoul(num_value, NULL, 10);
+            }
+        }
     }
 
     free(line);
@@ -381,7 +433,7 @@ static void get_process_cmdline(char *cmdline, pid_t pid)
     char buf[MAX_CMDLINE+1] = {0};
     FILE *fp;
 
-    snprintf(path, sizeof(path), "/proc/%d/cmdline", pid);
+    snprintf(path, sizeof(path), "%s/%d/cmdline", PROCDIR, pid);
 
     if ((fp = fopen(path, "r")) == NULL)
     {

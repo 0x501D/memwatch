@@ -13,6 +13,7 @@ int main(int argc, char **argv)
     options_t options;
     list_navi_t navi;
     vector_process_t v;
+    process_data_t *ps = NULL;
 
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGENAME, LOCALEDIR);
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
             }
             else if (options.flags & SINGLE_PS_FL)
             {
-                print_single_process(&options, &navi, &v);
+                print_single_process(&options, &navi, &v, ps);
             }
             else
             {
@@ -70,6 +71,11 @@ int main(int argc, char **argv)
                     options.flags |= SINGLE_PS_FL;
                     key_pressed = 1;
                     navi.fixed_ps = 0;
+                    ps = (process_data_t *) malloc(sizeof(process_data_t));
+                    if (!ps)
+                    {
+                        err_exit("alloc failed: %s", strerror(errno));
+                    }
                 }
                 else if (options.flags & SINGLE_PS_FL)
                 {
@@ -77,6 +83,8 @@ int main(int argc, char **argv)
                     options.flags |= PROC_LIST_FL;
                     key_pressed = 1;
                     navi.fixed_ps = 0;
+                    free(ps);
+                    ps = NULL;
                 }
                 break;
 
@@ -131,15 +139,18 @@ int main(int argc, char **argv)
                 break;
 
             case 'l':
-                if (options.flags & PROC_LIST_FL)
+                if (!(options.flags & SINGLE_PS_FL))
                 {
-                    options.flags &= ~PROC_LIST_FL;
+                    if (options.flags & PROC_LIST_FL)
+                    {
+                        options.flags &= ~PROC_LIST_FL;
+                    }
+                    else
+                    {
+                        options.flags |= PROC_LIST_FL;
+                    }
+                    key_pressed = 1;
                 }
-                else
-                {
-                    options.flags |= PROC_LIST_FL;
-                }
-                key_pressed = 1;
                 break;
 
             case KEY_UP:
@@ -216,6 +227,10 @@ int main(int argc, char **argv)
         {
             navi.flags &= ~NAVI_FIXED_PS_EXITED;
             key_pressed = 1;
+            if (ps)
+            {
+                free(ps);
+            }
         }
 
         if (timer > 0)
@@ -233,6 +248,10 @@ int main(int argc, char **argv)
     mvhline(LINES - 1, 0, ' ', COLS);
     refresh();
     endwin();
+    if (ps)
+    {
+        free(ps);
+    }
     vector_free(&v);
 
     return 0;
