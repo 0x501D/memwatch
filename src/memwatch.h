@@ -60,11 +60,13 @@ enum {
     SORT_RSS_FL  = 1 << 12,
     SORT_SHM_FL  = 1 << 13,
     SORT_VIR_FL  = 1 << 14,
-    SORT_SWP_FL  = 1 << 15
+    SORT_SWP_FL  = 1 << 15,
+    SINGLE_PS_FL = 1 << 16
 };
 
 enum {
-    NAVI_GO_LAST_FL     = 1
+    NAVI_GO_LAST_FL      = 1,
+    NAVI_FIXED_PS_EXITED = 1 << 1
 };
 
 typedef struct options_s {
@@ -76,6 +78,7 @@ typedef struct options_s {
 typedef struct list_navi_s {
     uint32_t highlight;
     uint32_t offset;
+    pid_t fixed_ps;
     int flags;
 } list_navi_t;
 

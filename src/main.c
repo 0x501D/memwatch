@@ -38,6 +38,10 @@ int main(int argc, char **argv)
             {
                 print_process_list(&options, &navi, &v);
             }
+            else if (options.flags & SINGLE_PS_FL)
+            {
+                print_single_process(&options, &navi, &v);
+            }
             else
             {
                 print_memory_info(&options);
@@ -57,6 +61,23 @@ int main(int argc, char **argv)
             case KEY_F(1):
                 print_hotkeys_help();
                 key_pressed = 1;
+                break;
+
+            case 10: /* Enter */
+                if (options.flags & PROC_LIST_FL)
+                {
+                    options.flags &= ~PROC_LIST_FL;
+                    options.flags |= SINGLE_PS_FL;
+                    key_pressed = 1;
+                    navi.fixed_ps = 0;
+                }
+                else if (options.flags & SINGLE_PS_FL)
+                {
+                    options.flags &= ~SINGLE_PS_FL;
+                    options.flags |= PROC_LIST_FL;
+                    key_pressed = 1;
+                    navi.fixed_ps = 0;
+                }
                 break;
 
             case 's':
@@ -189,6 +210,12 @@ int main(int argc, char **argv)
                 options.flags |= SORT_SWP_FL;
                 key_pressed = 1;
                 break;
+        }
+
+        if (navi.flags & NAVI_FIXED_PS_EXITED)
+        {
+            navi.flags &= ~NAVI_FIXED_PS_EXITED;
+            key_pressed = 1;
         }
 
         if (timer > 0)

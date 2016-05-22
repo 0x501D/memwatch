@@ -12,9 +12,10 @@
 static void print_items(uint32_t pos, list_navi_t *navi,
                         const vector_process_t *v,
                         const options_t *options);
+static void print_item(const process_data_t *ps);
 static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v);
-static int get_process_stats(const char *path, process_data_t *item);
+static int get_process_stats(const char *path, process_data_t *item, uint8_t full);
 static uint64_t legacy_get_shmem(const char *path);
 static void get_process_cmdline(char *cmdline, pid_t pid);
 
@@ -45,6 +46,47 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     print_items(4, navi, v, options);
 
     refresh();
+}
+
+void print_single_process(options_t *options, list_navi_t *navi,
+                          vector_process_t *v)
+{
+    clear_screen();
+
+    if (!navi->fixed_ps)
+    {
+        size_t index = (navi->highlight + navi->offset) - 1;
+        const process_data_t *ps = NULL;
+        get_process_list(v);
+        vector_sort(v, options->flags);
+        ps = vector_at(v, index);
+        print_item(ps);
+        navi->fixed_ps = (vector_at(v, index))->pid;
+        return;
+    }
+    {
+        process_data_t ps;
+        char path[PATH_MAX + 1] = {0};
+
+        memset(&ps, 0, sizeof(ps));
+        snprintf(path, sizeof(path), "%s/%d/status", PROCDIR, navi->fixed_ps);
+        if (get_process_stats(path, &ps, 1) == 0)
+        {
+            print_item(&ps);
+        }
+        else
+        {
+            options->flags &= ~SINGLE_PS_FL;
+            options->flags |= PROC_LIST_FL;
+            navi->fixed_ps = 0;
+            navi->flags |= NAVI_FIXED_PS_EXITED;
+        }
+    }
+}
+
+static void print_item(const process_data_t *ps)
+{
+    mvprintw(1, 1, "%d %s", ps->pid, ps->state);
 }
 
 static void print_items(uint32_t pos, list_navi_t *navi,
@@ -193,7 +235,7 @@ static void get_process_list(vector_process_t *v)
         snprintf(status_file, sizeof(status_file), "%s/%s/%s",
                  PROCDIR, dir_info->d_name, STATFILE);
 
-        if (get_process_stats(status_file, &item) == 0)
+        if (get_process_stats(status_file, &item, 0) == 0)
         {
             vector_insert(v, &item);
         }
@@ -202,7 +244,7 @@ static void get_process_list(vector_process_t *v)
     closedir(proc_dirp);
 }
 
-static int get_process_stats(const char *path, process_data_t *item)
+static int get_process_stats(const char *path, process_data_t *item, uint8_t full)
 {
     FILE *fp;
     char *line = NULL;
