@@ -22,6 +22,6 @@
 void print_process_list(const options_t *options,
                         list_navi_t *navi, vector_process_t *v);
 void print_single_process(options_t *options, list_navi_t *navi,
-                          vector_process_t *v, process_data_t *ps);
+                          process_data_t *ps);
 
 #endif /* PROCESS_INFO_H_ */

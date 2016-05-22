@@ -49,54 +49,29 @@ void print_process_list(const options_t *options, list_navi_t *navi,
 }
 
 void print_single_process(options_t *options, list_navi_t *navi, 
-                          vector_process_t *v, process_data_t *ps)
+                          process_data_t *ps)
 {
+    char path[PATH_MAX + 1] = {0};
+
     clear_screen();
 
-    /* We need to get pid for selected process */
-    if (!navi->fixed_ps)
+    snprintf(path, sizeof(path), "%s/%d/status", PROCDIR, navi->cur_ps);
+    if (!(options->flags & REPRINT_FL))
     {
-        size_t index = (navi->highlight + navi->offset) - 1;
-        const process_data_t *ps = NULL;
-        get_process_list(v, 1);
-        vector_sort(v, options->flags);
-        ps = vector_at(v, index);
-        if (!ps)
+        if (get_process_stats(path, ps, 1) == 0)
         {
-            goto out;
+            print_item(ps, options);
+            return;
         }
-        print_item(ps, options);
-        navi->fixed_ps = vector_at(v, index)->pid;
-        return;
+        else
+        {
+            options->flags &= ~SINGLE_PS_FL;
+            options->flags |= PROC_LIST_FL;
+            navi->flags |= NAVI_FIXED_PS_EXITED;
+        }
     }
 
-    /* We have pid, no need to use vector */
-    {
-        char path[PATH_MAX + 1] = {0};
-
-        snprintf(path, sizeof(path), "%s/%d/status", PROCDIR, navi->fixed_ps);
-        if (!(options->flags & REPRINT_FL))
-        {
-            if (get_process_stats(path, ps, 1) == 0)
-            {
-                print_item(ps, options);
-                return;
-            }
-            else
-            {
-                goto out;
-            }
-        }
-
-        print_item(ps, options);
-        return;
-    }
-
-out:
-    options->flags &= ~SINGLE_PS_FL;
-    options->flags |= PROC_LIST_FL;
-    navi->fixed_ps = 0;
-    navi->flags |= NAVI_FIXED_PS_EXITED;
+    print_item(ps, options);
 }
 
 static void print_item(const process_data_t *ps, const options_t *options)
@@ -193,6 +168,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
         if (count == navi->highlight)
         {
             attron(A_REVERSE | COLOR_PAIR(1));
+            navi->cur_ps = vector_at(v, index)->pid;
         }
 
         mvprintw(pos, 0, "%5d  %-11s %-12s%-12s%-12s%-12s %c %s",

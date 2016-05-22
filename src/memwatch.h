@@ -78,7 +78,7 @@ typedef struct options_s {
 typedef struct list_navi_s {
     uint32_t highlight;
     uint32_t offset;
-    pid_t fixed_ps;
+    pid_t cur_ps;
     int flags;
 } list_navi_t;
 

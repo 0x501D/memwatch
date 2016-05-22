@@ -41,7 +41,7 @@ int main(int argc, char **argv)
             }
             else if (options.flags & SINGLE_PS_FL)
             {
-                print_single_process(&options, &navi, &v, ps);
+                print_single_process(&options, &navi, ps);
             }
             else
             {
@@ -70,7 +70,6 @@ int main(int argc, char **argv)
                     options.flags &= ~PROC_LIST_FL;
                     options.flags |= SINGLE_PS_FL;
                     key_pressed = 1;
-                    navi.fixed_ps = 0;
                     ps = (process_data_t *) malloc(sizeof(process_data_t));
                     if (!ps)
                     {
@@ -82,7 +81,6 @@ int main(int argc, char **argv)
                     options.flags &= ~SINGLE_PS_FL;
                     options.flags |= PROC_LIST_FL;
                     key_pressed = 1;
-                    navi.fixed_ps = 0;
                     free(ps);
                     ps = NULL;
                 }
