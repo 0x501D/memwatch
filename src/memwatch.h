@@ -98,6 +98,7 @@ typedef struct process_data_s {
     uint64_t vm_swap;
     uint64_t vm_shr;
     char state[MAX_STATUS_LEN + 1];
+    char cmdline[MAX_CMDLINE + 1];
 } process_data_t;
 
 typedef struct vector_process_s {

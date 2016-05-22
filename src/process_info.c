@@ -66,7 +66,7 @@ void print_single_process(options_t *options, list_navi_t *navi,
             goto out;
         }
         print_item(ps, options);
-        navi->fixed_ps = (vector_at(v, index))->pid;
+        navi->fixed_ps = vector_at(v, index)->pid;
         return;
     }
 
@@ -102,13 +102,11 @@ out:
 static void print_item(const process_data_t *ps, const options_t *options)
 {
     char buf[BUFSIZ] = {0};
-    char cmdline[MAX_CMDLINE + 1] = {0};
     char num_buf_a[MAX_UINT64_LEN+1] = {0};
     char num_buf_b[MAX_UINT64_LEN+1] = {0};
-    get_process_cmdline(cmdline, ps->pid, 2);
 
     mvaddstr(1, 1, gen_title(buf, _("Process Information"), options->flags));
-    mvaddstr(3, 1, cmdline);
+    mvaddstr(3, 1, ps->cmdline);
     mvprintw(5, 1, "%s: %s, %s %d", _("State"), ps->state,
                                     _("Pid"), ps->pid);
     num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_size , options),
@@ -145,7 +143,6 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     char shr[MAX_UINT64_LEN +1 ] = {0};
     char vir[MAX_UINT64_LEN +1 ] = {0};
     char swp[MAX_UINT64_LEN +1 ] = {0};
-    char cmdline[MAX_CMDLINE + 1] = {0};
 
     /* up key pressed at the top of list, goto last element */
     if (navi->flags & NAVI_GO_LAST_FL)
@@ -198,8 +195,6 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        get_process_cmdline(cmdline, vector_at(v, index)->pid, 70);
-
         mvprintw(pos, 0, "%5d  %-11s %-12s%-12s%-12s%-12s %c %s",
                  vector_at(v, index)->pid,
                  user_info ? user_info->pw_name : _("unknown"),
@@ -208,7 +203,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
                  num_to_str(vir, sizeof(vir), vector_at(v, index)->vm_size, options),
                  num_to_str(swp, sizeof(swp), vector_at(v, index)->vm_swap, options),
                  vector_at(v, index)->state[0],
-                 cmdline);
+                 vector_at(v, index)->cmdline);
 
         if (count == navi->highlight)
         {
@@ -407,6 +402,19 @@ static int get_process_stats(const char *path, process_data_t *item, uint8_t ful
         strncpy(status_path, path, sizeof(status_path));
         snprintf(statm_path, sizeof(statm_path), "%s/statm", dirname(status_path));
         item->vm_shr = legacy_get_shmem(statm_path);
+    }
+
+    {
+        char cmdline[MAX_CMDLINE + 1] = {0};
+        if (full)
+        {
+            get_process_cmdline(cmdline, item->pid, 2);
+        }
+        else
+        {
+            get_process_cmdline(cmdline, item->pid, 70);
+        }
+        strncpy(item->cmdline, cmdline, MAX_CMDLINE);
     }
 
     return 0;

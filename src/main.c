@@ -230,6 +230,7 @@ int main(int argc, char **argv)
             if (ps)
             {
                 free(ps);
+                ps = NULL;
             }
         }
 
