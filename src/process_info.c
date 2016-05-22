@@ -14,7 +14,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
                         const options_t *options);
 static void print_item(const process_data_t *ps, const options_t *options);
 static size_t get_process_count(void);
-static void get_process_list(vector_process_t *v);
+static void get_process_list(vector_process_t *v, uint8_t full);
 static int get_process_stats(const char *path, process_data_t *item, uint8_t full);
 static uint64_t legacy_get_shmem(const char *path);
 static void get_process_cmdline(char *cmdline, pid_t pid);
@@ -29,7 +29,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
 
     if (!(options->flags & REPRINT_FL))
     {
-        get_process_list(v);
+        get_process_list(v, 0);
     }
 
     snprintf(total, sizeof(total), "[%s %d]", _("total:"), (int) v->size);
@@ -58,7 +58,7 @@ void print_single_process(options_t *options, list_navi_t *navi,
     {
         size_t index = (navi->highlight + navi->offset) - 1;
         const process_data_t *ps = NULL;
-        get_process_list(v);
+        get_process_list(v, 1);
         vector_sort(v, options->flags);
         ps = vector_at(v, index);
         if (!ps)
@@ -102,10 +102,32 @@ out:
 static void print_item(const process_data_t *ps, const options_t *options)
 {
     char buf[BUFSIZ] = {0};
+    char num_buf_a[MAX_UINT64_LEN+1] = {0};
+    char num_buf_b[MAX_UINT64_LEN+1] = {0};
 
     mvaddstr(1, 1, gen_title(buf, _("Process Information"), options->flags));
     mvprintw(3, 1, "%s: %s", _("State"), ps->state);
     mvprintw(4, 1, "%s: %d", _("Pid"), ps->pid);
+    num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_size , options),
+    num_to_str(num_buf_b, sizeof(num_buf_b), ps->vm_peak , options),
+    mvprintw(5, 1, "%s: %s, %s: %s", _("Virtual"), num_buf_a,
+                                     _("Peak"), num_buf_b);
+    num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_rss , options),
+    num_to_str(num_buf_b, sizeof(num_buf_b), ps->vm_hwv , options),
+    mvprintw(6, 1, "%s: %s, %s: %s", _("Resident"), num_buf_a,
+                                     _("Peak"), num_buf_b);
+    mvprintw(7, 1, "%s: %s", _("Shared"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_shr, options));
+    mvprintw(8, 1, "%s: %s", _("Swap"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_swap, options));
+    mvprintw(9, 1, "%s: %s", _("Data"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_data, options));
+    mvprintw(10, 1, "%s: %s", _("Stack"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_stk, options));
+    mvprintw(11, 1, "%s: %s", _("Text"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_exe, options));
+    mvprintw(11, 1, "%s: %s", _("Library"),
+        num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_lib, options));
 }
 
 static void print_items(uint32_t pos, list_navi_t *navi,
@@ -219,7 +241,7 @@ static size_t get_process_count(void)
     return proc_count;
 }
 
-static void get_process_list(vector_process_t *v)
+static void get_process_list(vector_process_t *v, uint8_t full)
 {
     DIR *proc_dirp;
     struct dirent *dir_info = NULL;
@@ -254,7 +276,7 @@ static void get_process_list(vector_process_t *v)
         snprintf(status_file, sizeof(status_file), "%s/%s/%s",
                  PROCDIR, dir_info->d_name, STATFILE);
 
-        if (get_process_stats(status_file, &item, 0) == 0)
+        if (get_process_stats(status_file, &item, full) == 0)
         {
             vector_insert(v, &item);
         }
