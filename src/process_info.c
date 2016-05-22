@@ -17,7 +17,7 @@ static size_t get_process_count(void);
 static void get_process_list(vector_process_t *v, uint8_t full);
 static int get_process_stats(const char *path, process_data_t *item, uint8_t full);
 static uint64_t legacy_get_shmem(const char *path);
-static void get_process_cmdline(char *cmdline, pid_t pid);
+static void get_process_cmdline(char *cmdline, pid_t pid, size_t str_len);
 
 void print_process_list(const options_t *options, list_navi_t *navi,
                         vector_process_t *v)
@@ -102,31 +102,34 @@ out:
 static void print_item(const process_data_t *ps, const options_t *options)
 {
     char buf[BUFSIZ] = {0};
+    char cmdline[MAX_CMDLINE + 1] = {0};
     char num_buf_a[MAX_UINT64_LEN+1] = {0};
     char num_buf_b[MAX_UINT64_LEN+1] = {0};
+    get_process_cmdline(cmdline, ps->pid, 2);
 
     mvaddstr(1, 1, gen_title(buf, _("Process Information"), options->flags));
-    mvprintw(3, 1, "%s: %s", _("State"), ps->state);
-    mvprintw(4, 1, "%s: %d", _("Pid"), ps->pid);
+    mvaddstr(3, 1, cmdline);
+    mvprintw(5, 1, "%s: %s, %s %d", _("State"), ps->state,
+                                    _("Pid"), ps->pid);
     num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_size , options),
     num_to_str(num_buf_b, sizeof(num_buf_b), ps->vm_peak , options),
-    mvprintw(5, 1, "%s: %s, %s: %s", _("Virtual"), num_buf_a,
+    mvprintw(7, 1, "%-9s %s, %s: %s", _("Virtual:"), num_buf_a,
                                      _("Peak"), num_buf_b);
     num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_rss , options),
     num_to_str(num_buf_b, sizeof(num_buf_b), ps->vm_hwv , options),
-    mvprintw(6, 1, "%s: %s, %s: %s", _("Resident"), num_buf_a,
+    mvprintw(8, 1, "%-9s %s, %s: %s", _("Resident:"), num_buf_a,
                                      _("Peak"), num_buf_b);
-    mvprintw(7, 1, "%s: %s", _("Shared"),
+    mvprintw(9, 1, "%-9s %s", _("Shared:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_shr, options));
-    mvprintw(8, 1, "%s: %s", _("Swap"),
+    mvprintw(10, 1, "%-9s %s", _("Swap:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_swap, options));
-    mvprintw(9, 1, "%s: %s", _("Data"),
+    mvprintw(11, 1, "%-9s %s", _("Data:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_data, options));
-    mvprintw(10, 1, "%s: %s", _("Stack"),
+    mvprintw(12, 1, "%-9s %s", _("Stack:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_stk, options));
-    mvprintw(11, 1, "%s: %s", _("Text"),
+    mvprintw(13, 1, "%-9s %s", _("Text:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_exe, options));
-    mvprintw(11, 1, "%s: %s", _("Library"),
+    mvprintw(14, 1, "%-9s %s", _("Library:"),
         num_to_str(num_buf_a, sizeof(num_buf_a), ps->vm_lib, options));
 }
 
@@ -195,7 +198,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             attron(A_REVERSE | COLOR_PAIR(1));
         }
 
-        get_process_cmdline(cmdline, vector_at(v, index)->pid);
+        get_process_cmdline(cmdline, vector_at(v, index)->pid, 70);
 
         mvprintw(pos, 0, "%5d  %-11s %-12s%-12s%-12s%-12s %c %s",
                  vector_at(v, index)->pid,
@@ -449,7 +452,7 @@ uint64_t legacy_get_shmem(const char *path)
     return res;
 }
 
-static void get_process_cmdline(char *cmdline, pid_t pid)
+static void get_process_cmdline(char *cmdline, pid_t pid, size_t str_len)
 {
     char path[PATH_MAX] = {0};
     char buf[MAX_CMDLINE+1] = {0};
@@ -472,7 +475,7 @@ static void get_process_cmdline(char *cmdline, pid_t pid)
 
     {
         uint32_t i;
-        uint32_t cmd_len = COLS - 70; /* get rid of this magic number in future */
+        uint32_t cmd_len = COLS - str_len;
         for (i = 0; (i < cmd_len && i != MAX_CMDLINE); i++)
         {
             if (buf[i] == '\0')
