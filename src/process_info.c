@@ -190,6 +190,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
         {
             attroff(A_REVERSE | COLOR_PAIR(1));
         }
+        if (count == visible_items) break;
     }
 }
 
