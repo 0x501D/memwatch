@@ -23,11 +23,20 @@ int main(int argc, char **argv)
     memset(&navi, 0, sizeof(navi));
     memset(&v, 0, sizeof(v));
 
-    parse_options(argc, argv, &options);
+    parse_options(argc, argv, &options, &navi);
     config_curses();
 
     timer = options.delay;
     navi.highlight = 1;
+
+    if (navi.flags & NAVI_PID_FROM_ARGS)
+    {
+        ps = (process_data_t *) malloc(sizeof(process_data_t));
+        if (!ps)
+        {
+            err_exit("alloc failed: %s", strerror(errno));
+        }
+    }
 
     while (!quit)
     {
@@ -76,7 +85,8 @@ int main(int argc, char **argv)
                         err_exit("alloc failed: %s", strerror(errno));
                     }
                 }
-                else if (options.flags & SINGLE_PS_FL)
+                else if ((options.flags & SINGLE_PS_FL) &&
+                        !(navi.flags & NAVI_PID_FROM_ARGS))
                 {
                     options.flags &= ~SINGLE_PS_FL;
                     options.flags |= PROC_LIST_FL;
@@ -229,6 +239,10 @@ int main(int argc, char **argv)
             {
                 free(ps);
                 ps = NULL;
+            }
+            if (navi.flags & NAVI_NEED_EXIT)
+            {
+                quit = 1;
             }
         }
 

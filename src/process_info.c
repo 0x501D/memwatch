@@ -68,6 +68,11 @@ void print_single_process(options_t *options, list_navi_t *navi,
             options->flags &= ~SINGLE_PS_FL;
             options->flags |= PROC_LIST_FL;
             navi->flags |= NAVI_FIXED_PS_EXITED;
+            if (navi->flags & NAVI_PID_FROM_ARGS)
+            {
+                navi->flags |= NAVI_NEED_EXIT;
+            }
+            return;
         }
     }
 

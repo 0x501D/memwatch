@@ -17,13 +17,15 @@ static void print_help(FILE *out)
     fputs(_(" -g, --giga:      display the amount of memory in gigabytes\n"), out);
     fputs(_(" -t, --tera:      display the amount of memory in terabytes\n"), out);
     fputs(_(" -h, --human:     display the amount of memory in human readable format(default)\n"), out);
-    fputs(_(" -l, --list:      print memory usage per process\n"), out);
+    fputs(_(" -l, --list:      display a list of processes\n"), out);
+    fputs(_(" -p PID, --pid:   show only processes with specified PID\n"), out);
     fputs(_(" -V, --version:   print version\n"), out);
     fputs(_("     --help:      print help and exit\n"), out);
     fprintf(out, _("\nFor more details see %s(1).\n"), PACKAGENAME);
 }
 
-void parse_options(int argc, char *const argv[], options_t *options)
+void parse_options(int argc, char *const argv[],
+                   options_t *options, list_navi_t *navi)
 {
     int opt;
     float delay = 0;
@@ -42,12 +44,13 @@ void parse_options(int argc, char *const argv[], options_t *options)
         { "tera",    no_argument,       NULL, 't'         },
         { "human",   no_argument,       NULL, 'h'         },
         { "list",    no_argument,       NULL, 'l'         },
+        { "pid",     required_argument, NULL, 'p'         },
         { "version", no_argument,       NULL, 'V'         },
         { "help",    no_argument,       NULL, HELP_OPTION },
         { NULL, 0, NULL, 0                                }
     };
 
-    while ((opt = getopt_long(argc, argv, "d:SbkmgthlV", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "d:p:SbkmgthlV", longopts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -67,6 +70,23 @@ void parse_options(int argc, char *const argv[], options_t *options)
                      exit(EXIT_FAILURE);
                 }
                 break;
+
+            case 'p':
+            {
+                int32_t pid = atoi(optarg);
+                if ((pid > 0 ) && (pid < INT32_MAX))
+                {
+                    navi->cur_ps = pid;
+                    options->flags |= SINGLE_PS_FL;
+                    navi->flags |= NAVI_PID_FROM_ARGS;
+                }
+                else
+                {
+                     fprintf(stderr, _("Incorrect PID number\n"));
+                     exit(EXIT_FAILURE);
+                }
+                break;
+            }
 
             case 'S':
                 options->power = SI_UNITS_POWER;

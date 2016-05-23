@@ -66,7 +66,9 @@ enum {
 
 enum {
     NAVI_GO_LAST_FL      = 1,
-    NAVI_FIXED_PS_EXITED = 1 << 1
+    NAVI_FIXED_PS_EXITED = 1 << 1,
+    NAVI_NEED_EXIT       = 1 << 2,
+    NAVI_PID_FROM_ARGS   = 1 << 3
 };
 
 typedef struct options_s {
