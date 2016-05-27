@@ -213,17 +213,24 @@ void print_hotkeys_help(void)
               _("print sizes in powers of 1000 instead of 1024."));
     mvwprintw(win, 6, 1, "%-11s %s", _("l:"),
               _("switch between the main window and a list of processes."));
-    mvwprintw(win, 7, 1, "%-11s %s", _("q:"),
-              _("Exit memwatch."));
-    mvwaddstr(win, 9, 1, _("Process list hotkeys:"));
-    mvwprintw(win, 11, 1, "%-11s %s", _("arrows:"),
-              _("scroll process list"));
-    mvwprintw(win, 12, 1, "%-11s %s", _("1,2,3,4:"),
+    mvwprintw(win, 7, 1, "%-11s %s", _("F1,?:"),
+              _("print this help."));
+    mvwprintw(win, 8, 1, "%-11s %s", _("q:"),
+              _("exit memwatch."));
+    mvwaddstr(win, 10, 1, _("Process list hotkeys:"));
+    mvwprintw(win, 12, 1, "%-11s %s", _("Arrows:"),
+              _("scroll process list."));
+    mvwprintw(win, 13, 1, "%-11s %s", _("1,2,3,4:"),
               _("sort by field: 1 -> RSS, 2 -> SHR, 3 -> VIRT, 4 -> SWAP"));
-    mvwprintw(win, 13, 1, "%-11s %s", _("r:"),
+    mvwprintw(win, 14, 1, "%-11s %s", _("r:"),
               _("switch the sort order."));
-    mvwaddstr(win, 18, 1, _("Press any key to leave help."));
-    mvwprintw(win, 20, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
+    mvwprintw(win, 15, 1, "%-11s %s", _("Enter:"),
+              _("show information by selected process."));
+    mvwaddstr(win, 17, 1, _("Process information hotkeys:"));
+    mvwprintw(win, 19, 1, "%-11s %s", _("Enter:"),
+              _("back to process list."));
+    mvwaddstr(win, 23, 1, _("Press any key to leave help."));
+    mvwprintw(win, 25, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
 
     wrefresh(win);
     wgetch(win);

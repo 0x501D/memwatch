@@ -67,7 +67,7 @@ int main(int argc, char **argv)
             case 'q':
                 quit = 1;
                 break;
-
+            case '?':
             case KEY_F(1):
                 print_hotkeys_help();
                 key_pressed = 1;

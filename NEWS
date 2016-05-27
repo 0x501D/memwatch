@@ -1,3 +1,10 @@
+v0.3.0 - 27 May 2016
+--------------------
+    - Process list.
+    - Show only processes with specified PID.
+    - Help menu.
+    - Fix bug with high cpu load.
+
 v0.2.1 - 7 May 2016
 --------------------
     - Fix bug with unit size options (bug #5).

@@ -6,7 +6,9 @@ memwatch \- Shows memory usage statistics in real time.
 .B memwatch
 .RI [ options ]
 .SH DESCRIPTION
-This program reads /proc/meminfo and prints memory and swap statistics.
+The main window displays the general statistics on the use of memory.
+.TP
+Data gather from /proc/meminfo.
 .TP
 The displayed keys for physical ram (Memory [unit size]):
 .TP
@@ -38,6 +40,69 @@ Unused swap space.
 .TP
 \fBUsed\fR
 Used swap space.
+.TP
+Window of Process list prints processes, sorted by memory usage.
+.TP
+Data gather from /proc/PID/status and /proc/PID/cmdline.
+.TP
+\fBPID\fR
+Process ID.
+.TP
+\fBOWNER\fR
+Process owner.
+.TP
+\fBRES\fR
+The size of use physical memory.
+.TP
+\fBSHR\fR
+The size of the process's shared pages.
+.TP
+\fBVIRT\fR
+The total amount of virtual memory used by the task.
+.TP
+\fBSWAP\fR
+The size of the process's address space in swap.
+.TP
+\fBS\fR
+Process status.
+The status of the task which can be one of:
+  \fBD\fR - uninterruptible sleep.
+  \fBR\fR - running.
+  \fBS\fR - sleeping.
+  \fBT\fR - stopped by job control signal.
+  \fBt\fR - stopped by debugger during trace.
+  \fBZ\fR - zombie.
+.TP
+\fBCommand\fR
+The full command line of the process. Program name and arguments.
+.TP
+Process information window shows additional information.
+.TP
+Data gather from /proc/PID/status and /proc/PID/cmdline.
+.TP
+\fBVirtual, Peak\fR
+Current virtual and peak vertual memory usage.
+.TP
+\fBResident, Peak\fR
+Current physical and peak physical memory usage.
+.TP
+\fBShared\fR
+The size of the process's shared pages.
+.TP
+\fBSwap\fR
+The size of the process's address space in swap.
+.TP
+\fBData\fR
+Size of data segments.
+.TP
+\fBStack\fR
+Size of stack segments.
+.TP
+\fBText\fR
+Size of text segments.
+.TP
+\fBLibrary\fR
+Shared library code size.
 .SH OPTIONS
 .TP
 \fB-d\fR, \fB\-\-delay\fR \fIseconds\fR
@@ -64,6 +129,12 @@ Display the amount of memory in terabytes.
 \fB\-h\fR, \fB\-\-human\fR
 Display the amount of memory in human readable format.
 .TP
+\fB\-l\fR, \fB\-\-list\fR
+Display a list of processes.
+.TP
+\fB-p\fR, \fB\-\-pid\fR \fIPID\fR
+Show only processes with specified PID.
+.TP
 \fB\-V\fR, \fB\-\-version\fR
 Prints version.
 .TP
@@ -73,9 +144,7 @@ Prints help message.
 .LP
 The following commands are supported while in memwatch:
 .LP
-.TP
-.B q
-Exit memwatch.
+Global hotkeys:
 .TP
 .B b
 Display the amount of memory in bytes.
@@ -95,7 +164,44 @@ Display the amount of memory in terabytes.
 .B h
 Display the amount of memory in human readable format.
 .TP
-.B S
+.B s
 Toggle power size (1000 or 1024).
+.TP
+.B l
+Switch between the main window and a list of processes.
+.TP
+.B F1, ?
+Print help.
+.TP
+.B q
+Exit memwatch.
+.LP
+Process list hotkeys:
+.TP
+.B Arrows
+Scroll process list.
+.TP
+.B 1
+Sort by RSS field.
+.TP
+.B 2
+Sort by SHR field.
+.TP
+.B 3
+Sort by VIRT field.
+.TP
+.B 4
+Sort by SWAP field.
+.TP
+.B r
+Switch the sort order.
+.TP
+.B Enter
+Show information by selected process.
+.LP
+Process information hotkeys:
+.TP
+.B Enter
+Back to process list.
 .SH AUTHOR
 Pavel Balaev (pascal@unixdev.ru)
