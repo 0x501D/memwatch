@@ -243,12 +243,12 @@ static void do_hidden_game(void)
     {
         int i;
 
-        clear_window(win);
-
         if (y_pos == LINES)
         {
             break;
         }
+
+        clear_window(win);
 
         /* hit detection */
         for (i = 0; i < tube_count; i++)
