@@ -132,6 +132,16 @@ void clear_screen(void)
     }
 }
 
+static void clear_window(WINDOW *w)
+{
+    int i;
+
+    for (i = 0; i <= LINES; i++)
+    {
+        mvwhline(w, i, 0, ' ', COLS);
+    }
+}
+
 void print_bar(uint32_t col, uint32_t used, uint32_t last)
 {
     size_t i, row;
@@ -199,9 +209,83 @@ int dirname_only_digits(const char *name)
     return res;
 }
 
+static void do_hidden_game(void)
+{
+    WINDOW *win;
+    int ch, quit = 0, up = 0;
+    int power = 0;
+    int x_pos = (COLS / 2) - 30;
+    int y_pos = LINES / 2;
+    const char *tux0 = "(o_";
+    const char *tux1 = "//\\";
+    const char *tux2 = "V_/_";
+
+    win = newwin(LINES, COLS, 0, 0);
+    nodelay(win, TRUE);
+
+    while (!quit)
+    {
+        clear_window(win);
+
+        if (y_pos == LINES)
+        {
+            break;
+        }
+
+        if (up)
+        {
+            power = 6;
+            up = 0;
+        }
+
+        mvwaddstr(win, y_pos-1, x_pos, tux0);
+        mvwaddstr(win, y_pos, x_pos,   tux1);
+        mvwaddstr(win, y_pos+1, x_pos, tux2);
+        wrefresh(win);
+
+        switch (power)
+        {
+            case 6:
+                y_pos -= 3;
+                power -= 3;
+                break;
+            case 3:
+                y_pos -= 2;
+                power -= 2;
+                break;
+            case 1:
+                y_pos -= 1;
+                power -= 1;
+                break;
+            default:
+                y_pos++;
+                break;
+        }
+
+        ch = wgetch(win);
+
+        switch (ch)
+        {
+            case ' ':
+                up = 1;
+                break;
+            case ERR:
+                break;
+            default:
+                quit = 1;
+                break;
+        }
+
+        usleep(80000);
+    }
+
+    delwin(win);
+}
+
 void print_hotkeys_help(void)
 {
     WINDOW *win;
+    char ch;
 
     win = newwin(LINES, COLS, 0, 0);
     mvwaddstr(win, 1, 1, _("Global hotkeys:"));
@@ -237,6 +321,11 @@ void print_hotkeys_help(void)
     mvwprintw(win, 27, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
 
     wrefresh(win);
-    wgetch(win);
+    ch = wgetch(win);
+    if (ch == '*')
+    {
+        do_hidden_game();
+    }
+
     delwin(win);
 }
