@@ -243,6 +243,8 @@ static void do_hidden_game(void)
     {
         int i;
 
+        clear_window(win);
+
         if (y_pos == LINES)
         {
             break;
@@ -257,13 +259,13 @@ static void do_hidden_game(void)
                     (y_pos >= tubes[i].len + 7))
                 {
                     quit = 1;
+                    mvwaddstr(win, y_pos-1, x_pos+4, "-this game sucks!");
+                    wrefresh(win);
                     break;
                 }
                 score++;
             }
         }
-
-        clear_window(win);
 
         for (i = 0; i < tube_count; i++)
         {
