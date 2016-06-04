@@ -161,6 +161,18 @@ int main(int argc, char **argv)
                 }
                 break;
 
+            case KEY_END:
+                navi.flags |= (NAVI_GO_LAST_FL | REPRINT_FL);
+                key_pressed = 1;
+                break;
+
+            case KEY_HOME:
+                navi.highlight = 1;
+                navi.offset = 0;
+                options.flags |= REPRINT_FL;
+                key_pressed = 1;
+                break;
+
             case KEY_UP:
                 if (navi.highlight == 1)
                 {
