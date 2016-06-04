@@ -220,17 +220,21 @@ void print_hotkeys_help(void)
     mvwaddstr(win, 10, 1, _("Process list hotkeys:"));
     mvwprintw(win, 12, 1, "%-11s %s", _("Arrows:"),
               _("scroll process list."));
-    mvwprintw(win, 13, 1, "%-11s %s", _("1,2,3,4:"),
+    mvwprintw(win, 13, 1, "%-11s %s", _("Home:"),
+              _("go to the begining of the process list."));
+    mvwprintw(win, 14, 1, "%-11s %s", _("End:"),
+              _("go to the end of the process list."));
+    mvwprintw(win, 15, 1, "%-11s %s", _("1,2,3,4:"),
               _("sort by field: 1 -> RSS, 2 -> SHR, 3 -> VIRT, 4 -> SWAP"));
-    mvwprintw(win, 14, 1, "%-11s %s", _("r:"),
+    mvwprintw(win, 16, 1, "%-11s %s", _("r:"),
               _("switch the sort order."));
-    mvwprintw(win, 15, 1, "%-11s %s", _("Enter:"),
+    mvwprintw(win, 17, 1, "%-11s %s", _("Enter:"),
               _("show information by selected process."));
-    mvwaddstr(win, 17, 1, _("Process information hotkeys:"));
-    mvwprintw(win, 19, 1, "%-11s %s", _("Enter:"),
+    mvwaddstr(win, 19, 1, _("Process information hotkeys:"));
+    mvwprintw(win, 21, 1, "%-11s %s", _("Enter:"),
               _("back to process list."));
-    mvwaddstr(win, 23, 1, _("Press any key to leave help."));
-    mvwprintw(win, 25, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
+    mvwaddstr(win, 25, 1, _("Press any key to leave help."));
+    mvwprintw(win, 27, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
 
     wrefresh(win);
     wgetch(win);
