@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <time.h>
 
 #include <memwatch.h>
 
@@ -211,36 +212,72 @@ int dirname_only_digits(const char *name)
 
 static void do_hidden_game(void)
 {
+    struct tube {
+        int len;
+        int x_pos;
+    };
+
     WINDOW *win;
-    int ch, quit = 0, up = 0;
+    int ch, quit = 0;
     int power = 0;
     int x_pos = (COLS / 2) - 30;
     int y_pos = LINES / 2;
+    int max_r = LINES - 10;
+    int tube_count = (LINES / 8) + 1;
+    int timer = 30, score = 0;
     const char *tux0 = "(o_";
     const char *tux1 = "//\\";
     const char *tux2 = "V_/_";
 
+    struct tube *tubes = calloc(tube_count, sizeof(struct tube));
+
     win = newwin(LINES, COLS, 0, 0);
     nodelay(win, TRUE);
 
+    if (max_r > 30)
+    {
+        max_r = 30;
+    }
+
     while (!quit)
     {
-        clear_window(win);
+        int i;
 
         if (y_pos == LINES)
         {
             break;
         }
 
-        if (up)
+        /* hit detection */
+        for (i = 0; i < tube_count; i++)
         {
-            power = 6;
-            up = 0;
+            if (tubes[i].x_pos == x_pos + 2)
+            {
+                if ((y_pos <= tubes[i].len + 1) ||
+                    (y_pos >= tubes[i].len + 7))
+                {
+                    quit = 1;
+                    break;
+                }
+                score++;
+            }
+        }
+
+        clear_window(win);
+
+        for (i = 0; i < tube_count; i++)
+        {
+            if (!(tubes[i].len)) continue;
+
+            mvwvline(win, 0, tubes[i].x_pos, '#', tubes[i].len);
+            mvwvline(win, tubes[i].len + 8, tubes[i].x_pos, '#', LINES);
+            tubes[i].x_pos--;
         }
 
         mvwaddstr(win, y_pos-1, x_pos, tux0);
         mvwaddstr(win, y_pos, x_pos,   tux1);
         mvwaddstr(win, y_pos+1, x_pos, tux2);
+        mvwprintw(win, 0, 1, "[score: %d]", score);
         wrefresh(win);
 
         switch (power)
@@ -267,7 +304,7 @@ static void do_hidden_game(void)
         switch (ch)
         {
             case ' ':
-                up = 1;
+                power = 6;
                 break;
             case ERR:
                 break;
@@ -277,8 +314,19 @@ static void do_hidden_game(void)
         }
 
         usleep(80000);
+        if (timer-- == 0)
+        {
+            srand(time(NULL));
+            memmove(tubes, &tubes[1], sizeof(struct tube) * (tube_count - 1));
+            tubes[tube_count - 1].len = (rand() % max_r) + 2;
+            tubes[tube_count - 1].x_pos = COLS - 1;
+            timer = 30;
+        }
     }
 
+    nodelay(win, FALSE);
+    wgetch(win);
+    free(tubes);
     delwin(win);
 }
 
