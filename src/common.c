@@ -327,9 +327,13 @@ static void do_hidden_game(void)
     }
 
     nodelay(win, FALSE);
-    wgetch(win);
+    ch = wgetch(win);
     free(tubes);
     delwin(win);
+    if (ch == 'r')
+    {
+         do_hidden_game();
+    }
 }
 
 void print_hotkeys_help(void)
