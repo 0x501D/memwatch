@@ -64,14 +64,13 @@ The total amount of virtual memory used by the task.
 The size of the process's address space in swap.
 .TP
 \fBS\fR
-Process status.
+Process status. Zombie processes are not displayed, since do not consume memory.
 The status of the task which can be one of:
   \fBD\fR - uninterruptible sleep.
   \fBR\fR - running.
   \fBS\fR - sleeping.
   \fBT\fR - stopped by job control signal.
   \fBt\fR - stopped by debugger during trace.
-  \fBZ\fR - zombie.
 .TP
 \fBCommand\fR
 The full command line of the process. Program name and arguments.
@@ -180,6 +179,12 @@ Process list hotkeys:
 .TP
 .B Arrows
 Scroll process list.
+.TP
+.B Home
+Go to the begining of the process list.
+.TP
+.B End
+Go to the end of the process list.
 .TP
 .B 1
 Sort by RSS field.
