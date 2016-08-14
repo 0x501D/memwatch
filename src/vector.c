@@ -39,6 +39,45 @@ static int compare(const void *n1, const void *n2, void *arg)
     return val2 - val1;
 }
 
+static int compare_string(const void *n1, const void *n2)
+{
+    char proc_name_1[MAX_CMDLINE + 1] = {0};
+    char proc_name_2[MAX_CMDLINE + 1] = {0};
+    char *space = NULL;
+
+    process_data_t *p1 = (process_data_t *) n1;
+    process_data_t *p2 = (process_data_t *) n2;
+
+    strncpy(proc_name_1, p1->cmdline, MAX_CMDLINE + 1);
+    strncpy(proc_name_2, p2->cmdline, MAX_CMDLINE + 1);
+
+    /* remove process arguments */
+    space = strchr(proc_name_1, ' ');
+    if (space)
+    {
+        *space = '\0';
+        space = NULL;
+    }
+
+    space = strchr(proc_name_2, ' ');
+    if (space)
+    {
+        *space = '\0';
+    }
+
+    return strcmp(basename(proc_name_1), basename(proc_name_2));
+}
+
+const process_data_t *vector_search(vector_process_t *v, const char *name)
+{
+    process_data_t key;
+    strncpy(key.cmdline, name, MAX_CMDLINE);
+
+    qsort(v, v->total, sizeof(process_data_t), compare_string);
+
+    return bsearch(&key, v, v->total, sizeof(process_data_t), compare_string);
+}
+
 int vector_init(vector_process_t *v, size_t nmemb)
 {
     v->size = 0;
