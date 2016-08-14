@@ -79,6 +79,41 @@ void print_single_process(options_t *options, list_navi_t *navi,
     print_item(ps, options);
 }
 
+pid_t search_pid_by_name(vector_process_t *v)
+{
+    const process_data_t *ps;
+    char input[MAX_CMDLINE] = {0};
+
+    clear_screen();
+    mvprintw(2, 2, _("Search process: "));
+    echo();
+    timeout(-1);
+    curs_set(1);
+    getstr(input);
+    curs_set(0);
+    noecho();
+
+    if (strlen(input) == 0)
+    {
+        goto out;
+    }
+
+    ps = vector_search(v, input);
+
+    if (ps)
+    {
+        timeout(0);
+        return ps->pid;
+    }
+
+out:
+    mvprintw(3, 2, _("Not found. Press any key."));
+    getch();
+    timeout(0);
+
+    return 0;
+}
+
 static void print_item(const process_data_t *ps, const options_t *options)
 {
     char buf[BUFSIZ] = {0};

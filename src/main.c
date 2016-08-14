@@ -73,6 +73,29 @@ int main(int argc, char **argv)
                 key_pressed = 1;
                 break;
 
+            case '/':
+                {
+                    pid_t search_pid;
+
+                    if (options.flags & PROC_LIST_FL)
+                    {
+                        search_pid = search_pid_by_name(&v);
+                        if (search_pid > 0)
+                        {
+                            navi.cur_ps = search_pid;
+                            options.flags &= ~PROC_LIST_FL;
+                            options.flags |= SINGLE_PS_FL;
+                            ps = (process_data_t *) malloc(sizeof(process_data_t));
+                            if (!ps)
+                            {
+                                err_exit("alloc failed: %s", strerror(errno));
+                            }
+                        }
+                    }
+                }
+                key_pressed = 1;
+                break;
+
             case 10: /* Enter */
                 if (options.flags & PROC_LIST_FL)
                 {

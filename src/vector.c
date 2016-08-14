@@ -73,9 +73,9 @@ const process_data_t *vector_search(vector_process_t *v, const char *name)
     process_data_t key;
     strncpy(key.cmdline, name, MAX_CMDLINE);
 
-    qsort(v, v->total, sizeof(process_data_t), compare_string);
+    qsort(v->items, v->total, sizeof(process_data_t), compare_string);
 
-    return bsearch(&key, v, v->total, sizeof(process_data_t), compare_string);
+    return bsearch(&key, v->items, v->total, sizeof(process_data_t), compare_string);
 }
 
 int vector_init(vector_process_t *v, size_t nmemb)
