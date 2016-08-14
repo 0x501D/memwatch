@@ -85,7 +85,7 @@ pid_t search_pid_by_name(vector_process_t *v)
     char input[MAX_CMDLINE] = {0};
 
     clear_screen();
-    mvprintw(2, 2, _("Search process: "));
+    mvprintw(2, 2, _("Process name: "));
     echo();
     timeout(-1);
     curs_set(1);
