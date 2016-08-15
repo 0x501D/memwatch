@@ -204,6 +204,10 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     for (count = 1; index < v->size; index++, count++, pos++)
     {
         user_info = getpwuid(vector_at(v, index)->uid);
+        if (strlen(user_info->pw_name) > 11)
+        {
+             user_info->pw_name[11] = '\0';
+        }
 
         if (count == navi->highlight)
         {
