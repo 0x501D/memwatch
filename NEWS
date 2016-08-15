@@ -1,3 +1,9 @@
+v0.3.2 - 15 Aug 2016
+--------------------
+    - Look for a process by name.
+    - Fixed distortion of the process table because of long usernames.
+    - Internal ncurses Cmake module was removed.
+
 v0.3.1 - 11 Jun 2016
 --------------------
     - In the list of processes added hot keys: Home, End.

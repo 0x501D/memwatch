@@ -368,11 +368,13 @@ void print_hotkeys_help(void)
               _("switch the sort order."));
     mvwprintw(win, 17, 1, "%-11s %s", _("Enter:"),
               _("show information by selected process."));
-    mvwaddstr(win, 19, 1, _("Process information hotkeys:"));
-    mvwprintw(win, 21, 1, "%-11s %s", _("Enter:"),
+    mvwprintw(win, 18, 1, "%-11s %s", _("/:"),
+              _("look for a process by name."));
+    mvwaddstr(win, 20, 1, _("Process information hotkeys:"));
+    mvwprintw(win, 22, 1, "%-11s %s", _("Enter:"),
               _("back to process list."));
-    mvwaddstr(win, 25, 1, _("Press any key to leave help."));
-    mvwprintw(win, 27, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
+    mvwaddstr(win, 26, 1, _("Press any key to leave help."));
+    mvwprintw(win, 28, 1, "%s %s * %s", PACKAGENAME, VERSION, "(C) 2015-2016 Pavel Balaev");
 
     wrefresh(win);
     ch = wgetch(win);
