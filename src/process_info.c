@@ -89,7 +89,7 @@ pid_t search_pid_by_name(vector_process_t *v)
     echo();
     timeout(-1);
     curs_set(1);
-    getstr(input);
+    getnstr(input, MAX_CMDLINE);
     curs_set(0);
     noecho();
 
