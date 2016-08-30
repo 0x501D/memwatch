@@ -95,12 +95,15 @@ int vector_insert(vector_process_t *v, const process_data_t *data)
 {
     if (v->size == v->total)
     {
+        process_data_t *tmp = NULL;
         v->total *= 2;
-        v->items = (process_data_t *) realloc(v->items, sizeof(process_data_t) * v->total);
-        if (v->items == NULL)
+        tmp = (process_data_t *) realloc(v->items, sizeof(process_data_t) * v->total);
+        if (tmp == NULL)
         {
+            free(v->items);
             return 1;
         }
+        v->items = tmp;
     }
     memcpy(&v->items[v->size++], data, sizeof(process_data_t));
 
