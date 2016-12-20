@@ -33,9 +33,7 @@ int main(int argc, char **argv)
     {
         ps = (process_data_t *) malloc(sizeof(process_data_t));
         if (!ps)
-        {
             err_exit("alloc failed: %s", strerror(errno));
-        }
     }
 
     while (!quit)
@@ -87,9 +85,7 @@ int main(int argc, char **argv)
                             options.flags |= SINGLE_PS_FL;
                             ps = (process_data_t *) malloc(sizeof(process_data_t));
                             if (!ps)
-                            {
                                 err_exit("alloc failed: %s", strerror(errno));
-                            }
                         }
                     }
                 }
@@ -104,9 +100,7 @@ int main(int argc, char **argv)
                     key_pressed = 1;
                     ps = (process_data_t *) malloc(sizeof(process_data_t));
                     if (!ps)
-                    {
                         err_exit("alloc failed: %s", strerror(errno));
-                    }
                 }
                 else if ((options.flags & SINGLE_PS_FL) &&
                         !(navi.flags & NAVI_PID_FROM_ARGS))
@@ -173,13 +167,10 @@ int main(int argc, char **argv)
                 if (!(options.flags & SINGLE_PS_FL))
                 {
                     if (options.flags & PROC_LIST_FL)
-                    {
                         options.flags &= ~PROC_LIST_FL;
-                    }
                     else
-                    {
                         options.flags |= PROC_LIST_FL;
-                    }
+
                     key_pressed = 1;
                 }
                 break;
@@ -200,44 +191,33 @@ int main(int argc, char **argv)
                 if (navi.highlight == 1)
                 {
                     if (navi.offset > 0)
-                    {
                         navi.offset--;
-                    }
                     else
-                    {
                         navi.flags |= NAVI_GO_LAST_FL;
-                    }
                 }
                 else
-                {
                     navi.highlight--;
-                }
+
                 key_pressed = 1;
                 options.flags |= REPRINT_FL;
                 break;
 
             case KEY_DOWN:
                 if (navi.highlight == (uint32_t) LINES - 4)
-                {
                     navi.offset++;
-                }
                 else
-                {
                     navi.highlight++;
-                }
+
                 key_pressed = 1;
                 options.flags |= REPRINT_FL;
                 break;
 
             case 'r':
                 if (options.flags & SORT_REV_FL)
-                {
                     options.flags &= ~SORT_REV_FL;
-                }
                 else
-                {
                     options.flags |= SORT_REV_FL;
-                }
+
                 key_pressed = 1;
                 break;
 
@@ -276,9 +256,7 @@ int main(int argc, char **argv)
                 ps = NULL;
             }
             if (navi.flags & NAVI_NEED_EXIT)
-            {
                 quit = 1;
-            }
         }
 
         if (timer > 0)
@@ -297,9 +275,8 @@ int main(int argc, char **argv)
     refresh();
     endwin();
     if (ps)
-    {
         free(ps);
-    }
+
     vector_free(&v);
 
     return 0;

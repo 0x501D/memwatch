@@ -128,9 +128,7 @@ void clear_screen(void)
     int i;
 
     for (i = 0; i <= LINES; i++)
-    {
         mvhline(i, 0, ' ', COLS);
-    }
 }
 
 static void clear_window(WINDOW *w)
@@ -138,9 +136,7 @@ static void clear_window(WINDOW *w)
     int i;
 
     for (i = 0; i <= LINES; i++)
-    {
         mvwhline(w, i, 0, ' ', COLS);
-    }
 }
 
 void print_bar(uint32_t col, uint32_t used, uint32_t last)
@@ -149,14 +145,13 @@ void print_bar(uint32_t col, uint32_t used, uint32_t last)
     row = 2;
 
     mvaddch(col, row - 1, '[');
+
     for (i = 0; i < used; i++, row++)
-    {
          mvaddch(col, row, '#');
-    }
+
     for (i = 0; i < last; i++, row++)
-    {
          mvaddch(col, row, '-');
-    }
+
     mvaddch(col, row, ']');
 }
 
@@ -186,9 +181,7 @@ void grep_digits(char *dst, const char *src, size_t len)
     for (i = 0; (i < len && *src != '\0'); i++, src++)
     {
         if (isdigit(*src))
-        {
             *(dst++) = *src;
-        }
     }
 
     *dst = '\0';
@@ -235,18 +228,14 @@ static void do_hidden_game(void)
     nodelay(win, TRUE);
 
     if (max_r > 30)
-    {
         max_r = 30;
-    }
 
     while (!quit)
     {
         int i;
 
         if (y_pos == LINES)
-        {
             break;
-        }
 
         clear_window(win);
 
@@ -269,7 +258,8 @@ static void do_hidden_game(void)
 
         for (i = 0; i < tube_count; i++)
         {
-            if (!(tubes[i].len)) continue;
+            if (!(tubes[i].len))
+                continue;
 
             mvwvline(win, 0, tubes[i].x_pos, '#', tubes[i].len);
             mvwvline(win, tubes[i].len + 8, tubes[i].x_pos, '#', LINES);
@@ -330,10 +320,9 @@ static void do_hidden_game(void)
     ch = wgetch(win);
     free(tubes);
     delwin(win);
+
     if (ch == 'r')
-    {
          do_hidden_game();
-    }
 }
 
 void print_hotkeys_help(void)
@@ -378,10 +367,9 @@ void print_hotkeys_help(void)
 
     wrefresh(win);
     ch = wgetch(win);
+
     if (ch == '*')
-    {
         do_hidden_game();
-    }
 
     delwin(win);
 }

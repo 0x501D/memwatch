@@ -33,9 +33,8 @@ static int compare(const void *n1, const void *n2, void *arg)
     }
 
     if (*(flags) & SORT_REV_FL)
-    {
         return val1 - val2;
-    }
+
     return val2 - val1;
 }
 
@@ -61,9 +60,7 @@ static int compare_string(const void *n1, const void *n2)
 
     space = strchr(proc_name_2, ' ');
     if (space)
-    {
         *space = '\0';
-    }
 
     return strcmp(basename(proc_name_1), basename(proc_name_2));
 }
@@ -83,10 +80,9 @@ int vector_init(vector_process_t *v, size_t nmemb)
     v->size = 0;
     v->total = nmemb;
     v->items = (process_data_t *) calloc(nmemb, sizeof(process_data_t));
+
     if (v->items == NULL)
-    {
         return 1;
-    }
 
     return 0;
 }
@@ -113,9 +109,7 @@ int vector_insert(vector_process_t *v, const process_data_t *data)
 const process_data_t *vector_at(const vector_process_t *v, size_t nmemb)
 {
     if (nmemb > v->size)
-    {
         return NULL;
-    }
 
     return &v->items[nmemb];
 }
@@ -134,9 +128,7 @@ void vector_clear(vector_process_t *v)
 void vector_free(vector_process_t *v)
 {
     if (v->items == NULL)
-    {
         return;
-    }
 
     free(v->items);
 }

@@ -13,9 +13,7 @@ void print_memory_info(const options_t *options)
     ssize_t read;
 
     if ((fp = fopen(MEMFILE, "r")) == NULL)
-    {
          err_exit("%s %s", _("Error opening file:"), MEMFILE);
-    }
 
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -29,24 +27,18 @@ void print_memory_info(const options_t *options)
         fieldp = get_mem_field(field, strlen(field));
 
         if (!fieldp)
-        {
             continue;
-        }
 
         value = strtok_r(NULL, " ", &saveptr);
         last_ch = strlen(value) - 1;
         if (value[last_ch] == '\n')
-        {
             value[last_ch] = '\0';
-        }
 
         fieldp->value = strtoul(value, NULL, 10);
     }
 
     if (line)
-    {
         free(line);
-    }
     fclose(fp);
 
     draw_memory_window(options);
@@ -75,9 +67,7 @@ static void draw_memory_window(const options_t *options)
     swap_totalp  = get_mem_field(KEYSWTOTAL,  sizeof(KEYSWTOTAL) - 1);
 
     if (mem_cachp && mem_slabp)
-    {
         mem_cached = mem_cachp->value + mem_slabp->value;
-    }
 
     if (mem_freep && mem_totalp && mem_bufp)
     {
@@ -117,10 +107,9 @@ static void draw_memory_window(const options_t *options)
     else
     {
         swap_freep = get_mem_field(KEYSWFREE, sizeof(KEYSWFREE) - 1);
+
         if (swap_totalp && swap_freep)
-        {
             swap_used = swap_totalp->value - swap_freep->value;
-        }
 
         swap_ratio = (float) swap_used / swap_totalp->value;
         swap_bar_used = BAR_LEHGTH * swap_ratio;

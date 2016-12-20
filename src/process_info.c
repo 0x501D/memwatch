@@ -28,9 +28,7 @@ void print_process_list(const options_t *options, list_navi_t *navi,
     clear_screen();
 
     if (!(options->flags & REPRINT_FL))
-    {
         get_process_list(v, 0);
-    }
 
     snprintf(total, sizeof(total), "[%s %d]", _("total:"), (int) v->size);
 
@@ -68,10 +66,10 @@ void print_single_process(options_t *options, list_navi_t *navi,
             options->flags &= ~SINGLE_PS_FL;
             options->flags |= PROC_LIST_FL;
             navi->flags |= NAVI_FIXED_PS_EXITED;
+
             if (navi->flags & NAVI_PID_FROM_ARGS)
-            {
                 navi->flags |= NAVI_NEED_EXIT;
-            }
+
             return;
         }
     }
@@ -94,9 +92,7 @@ pid_t search_pid_by_name(vector_process_t *v)
     noecho();
 
     if (strlen(input) == 0)
-    {
         goto out;
-    }
 
     ps = vector_search(v, input);
 
@@ -169,18 +165,15 @@ static void print_items(uint32_t pos, list_navi_t *navi,
             navi->highlight = visible_items;
         }
         else
-        {
             navi->highlight = v->size;
-        }
+
         navi->flags &= ~NAVI_GO_LAST_FL;
     }
 
     if (v->size > visible_items)
     {
         if (navi->offset <= v->size - visible_items)
-        {
             index = navi->offset;
-        }
         else
         {
             navi->highlight = 1;
@@ -190,9 +183,8 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     else
     {
         if (navi->highlight > v->size)
-        {
             navi->highlight = 1;
-        }
+
         /* TODO: this is dirty trick, try to fix it in future. */
         if (navi->offset > 0)
         {
@@ -205,9 +197,7 @@ static void print_items(uint32_t pos, list_navi_t *navi,
     {
         user_info = getpwuid(vector_at(v, index)->uid);
         if (strlen(user_info->pw_name) > 11)
-        {
              user_info->pw_name[11] = '\0';
-        }
 
         if (count == navi->highlight)
         {
@@ -226,10 +216,10 @@ static void print_items(uint32_t pos, list_navi_t *navi,
                  vector_at(v, index)->cmdline);
 
         if (count == navi->highlight)
-        {
             attroff(A_REVERSE | COLOR_PAIR(1));
-        }
-        if (count == visible_items) break;
+
+        if (count == visible_items)
+            break;
     }
 }
 
@@ -248,9 +238,7 @@ static size_t get_process_count(void)
     while ((dir_info = readdir(proc_dirp)) != NULL)
     {
         if (!dirname_only_digits(dir_info->d_name))
-        {
             continue;
-        }
 
         proc_count++;
     }
@@ -273,9 +261,7 @@ static void get_process_list(vector_process_t *v, uint8_t full)
         vector_init(v, nmemb * 2);
     }
     else /* clear old vector data before use */
-    {
         vector_clear(v);
-    }
 
     if ((proc_dirp = opendir(PROCDIR)) == NULL)
     {
@@ -288,17 +274,13 @@ static void get_process_list(vector_process_t *v, uint8_t full)
         memset(&item, 0, sizeof(process_data_t));
 
         if (!dirname_only_digits(dir_info->d_name))
-        {
             continue;
-        }
 
         snprintf(status_file, sizeof(status_file), "%s/%s/%s",
                  PROCDIR, dir_info->d_name, STATFILE);
 
         if (get_process_stats(status_file, &item, full) == 0)
-        {
             vector_insert(v, &item);
-        }
     }
 
     closedir(proc_dirp);
@@ -331,10 +313,9 @@ static int get_process_stats(const char *path, process_data_t *item, uint8_t ful
         value = strtok_r(NULL, "\t", &saveptr);
 
         last_ch = strlen(value) - 1;
+
         if (value[last_ch] == '\n')
-        {
             value[last_ch] = '\0';
-        }
 
         if (strncmp(field, STATUS_PID, sizeof(STATUS_PID)) == 0)
         {
@@ -412,9 +393,7 @@ static int get_process_stats(const char *path, process_data_t *item, uint8_t ful
     fclose(fp);
 
     if (!user_process) /* ignore kernel process */
-    {
         return 1;
-    }
 
     if (!new_shmem)
     {
@@ -427,14 +406,12 @@ static int get_process_stats(const char *path, process_data_t *item, uint8_t ful
 
     {
         char cmdline[MAX_CMDLINE + 1] = {0};
+
         if (full)
-        {
             get_process_cmdline(cmdline, item->pid, 2);
-        }
         else
-        {
             get_process_cmdline(cmdline, item->pid, 70);
-        }
+
         strncpy(item->cmdline, cmdline, MAX_CMDLINE);
     }
 
@@ -448,9 +425,7 @@ uint64_t legacy_get_shmem(const char *path)
     FILE *fp;
 
     if ((fp = fopen(path, "r")) == NULL)
-    {
         return res;
-    }
 
     if (fgets(buf, sizeof(buf), fp) == NULL)
     {
@@ -508,9 +483,8 @@ static void get_process_cmdline(char *cmdline, pid_t pid, size_t str_len)
         for (i = 0; (i < cmd_len && i != MAX_CMDLINE); i++)
         {
             if (buf[i] == '\0')
-            {
                 buf[i] = ' ';
-            }
+
             cmdline[i] = buf[i];
         }
         cmdline[i] = '\0';
