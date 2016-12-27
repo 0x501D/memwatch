@@ -43,17 +43,11 @@ int main(int argc, char **argv)
         if (!idle || key_pressed)
         {
             if (options.flags & PROC_LIST_FL)
-            {
                 print_process_list(&options, &navi, &v);
-            }
             else if (options.flags & SINGLE_PS_FL)
-            {
                 print_single_process(&options, &navi, ps);
-            }
             else
-            {
                 print_memory_info(&options);
-            }
 
             key_pressed = 0;
             options.flags &= ~REPRINT_FL;
