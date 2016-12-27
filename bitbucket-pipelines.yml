@@ -13,4 +13,3 @@ pipelines:
           - cd build
           - cmake ../
           - make
-          - echo "Build OK"
