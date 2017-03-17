@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
+project(memwatch C)
 
-#set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic")
 add_subdirectory(src)
 
