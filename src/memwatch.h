@@ -61,7 +61,8 @@ enum {
     SORT_SHM_FL  = 1 << 13,
     SORT_VIR_FL  = 1 << 14,
     SORT_SWP_FL  = 1 << 15,
-    SINGLE_PS_FL = 1 << 16
+    SINGLE_PS_FL = 1 << 16,
+    GAME_FL      = 1 << 17
 };
 
 enum {

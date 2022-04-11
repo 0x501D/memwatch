@@ -20,8 +20,3 @@ $ make install
 ```
 
 On Gentoo Linux memwatch is available in portage: sys-process/memwatch
-
-## Screenshots ##
-![ScreenShot](https://unixdev.ru/wp-content/uploads/2016/05/memwatch.png)
-![ScreenShot](https://unixdev.ru/wp-content/uploads/2016/05/mw1.png)
-![ScreenShot](https://unixdev.ru/wp-content/uploads/2016/05/mw2.png)

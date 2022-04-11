@@ -36,6 +36,15 @@ int main(int argc, char **argv)
             err_exit("alloc failed: %s", strerror(errno));
     }
 
+    if (options.flags & GAME_FL)
+    {
+        do_hidden_game();
+        mvhline(LINES - 1, 0, ' ', COLS);
+        refresh();
+        endwin();
+        return 0;
+    }
+
     while (!quit)
     {
         wchar_t ch = 0;

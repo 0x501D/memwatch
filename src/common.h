@@ -11,5 +11,6 @@ void grep_digits(char *dst, const char *src, size_t len);
 int dirname_only_digits(const char *name);
 void print_hotkeys_help(void);
 void err_exit(const char *fmt, ...);
+void do_hidden_game(void);
 
 #endif /* COMMON_H_ */

@@ -46,11 +46,12 @@ void parse_options(int argc, char *const argv[],
         { "list",    no_argument,       NULL, 'l'         },
         { "pid",     required_argument, NULL, 'p'         },
         { "version", no_argument,       NULL, 'V'         },
+        { "game",    no_argument,       NULL, 'e'         },
         { "help",    no_argument,       NULL, HELP_OPTION },
         { NULL, 0, NULL, 0                                }
     };
 
-    while ((opt = getopt_long(argc, argv, "d:p:SbkmgthlV", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "d:p:SbkmgthlVe", longopts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -130,6 +131,10 @@ void parse_options(int argc, char *const argv[],
             case 'V':
                 printf("%s v%s\n", PACKAGENAME, VERSION);
                 exit(EXIT_SUCCESS);
+
+            case 'e':
+                options->flags |= GAME_FL;
+                break;
 
             case HELP_OPTION:
                 print_help(stdout);
