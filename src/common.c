@@ -203,7 +203,7 @@ int dirname_only_digits(const char *name)
     return res;
 }
 
-static void do_hidden_game(void)
+void do_hidden_game(void)
 {
     struct tube {
         int len;
