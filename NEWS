@@ -1,3 +1,8 @@
+v0.3.4 - 19 Sep 2024
+--------------------
+    - Fix segfault in process list.
+    - Run builtin game using an option.
+
 v0.3.3 - 06 Oct 2016
 --------------------
     - Bug fixes

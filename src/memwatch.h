@@ -41,7 +41,7 @@
 #define MAX_UINT64_LEN 22
 
 #ifndef VERSION
-#define VERSION "0.3.3"
+#define VERSION "0.3.4"
 #endif
 
 enum {
